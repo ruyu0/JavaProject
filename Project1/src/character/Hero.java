@@ -37,23 +37,3 @@ public class Hero {
     }
 }
 
-class ADHero extends Hero
-{
-	public ADHero(String heroname) {
-		super(heroname);
-		// TODO Auto-generated constructor stub
-	}
-
-	public void attack() {
-    	System.out.println(name + "进行了一次攻击");
-    }
-    
-    public void attack(Hero h1) {
-    	System.out.println(name + "攻击了" + h1.name);
-    }
-    
-    public void attack(Hero h1, Hero h2) {
-        System.out.println(name + "同时对" + h1.name + "和" + h2.name + "进行了攻击 ");
-    }
-}
-
