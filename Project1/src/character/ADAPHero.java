@@ -6,6 +6,13 @@ public class ADAPHero extends Hero implements AD, AP{
 	}
 	
 	@Override
+	public void attack() {
+		// TODO Auto-generated method stub
+		physicAttack();
+		magicAttack();
+	}
+	
+	@Override
 	public void physicAttack() {
 		System.out.println(name + "进行了物理攻击");
 	}
@@ -20,5 +27,4 @@ public class ADAPHero extends Hero implements AD, AP{
 		hero.physicAttack();
 		hero.magicAttack();
 	}
-
 }

@@ -5,6 +5,14 @@ public class APHero extends Hero implements AP{
 		// TODO Auto-generated constructor stub
 		super(heroname);
 	}
+
+	@Override
+	public void attack() {
+		// TODO Auto-generated method stub
+		magicAttack();
+		
+	}
+	
 	@Override
 	public void magicAttack() {
 		System.out.println(name + "进行了法术攻击");
