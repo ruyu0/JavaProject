@@ -1,6 +1,6 @@
 package character;
 
-class ADHero extends Hero implements AD{
+public class ADHero extends Hero implements AD{
 	@Override
 	public void physicAttack() {
 		System.out.println(name + "进行了物理攻击");
@@ -17,5 +17,6 @@ class ADHero extends Hero implements AD{
 		physicAttack();
     	System.out.println(name + "进行了一次攻击");
     }
+	
     
 }

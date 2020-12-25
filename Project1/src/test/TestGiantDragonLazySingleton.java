@@ -1,4 +1,6 @@
-package character;
+package test;
+
+import character.GiantDragon;
 
 public class TestGiantDragonLazySingleton {
 	public static void main(String args[]) {

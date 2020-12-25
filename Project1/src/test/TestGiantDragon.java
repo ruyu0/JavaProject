@@ -1,5 +1,7 @@
-package character;
- 
+package test;
+
+import character.GiantDragon;
+
 public class TestGiantDragon {
  
     public static void main(String[] args) {
