@@ -1,5 +1,7 @@
 package test;
 
+import java.util.Locale;
+
 import character.AD;
 import character.ADHero;
 import character.APHero;
@@ -78,5 +80,75 @@ public class Test {
 //        System.out.println(h12);
 		
 		
+		//专题一
+		//基本类型转封装类
+		int b1 = 10;
+		Integer a1 = new Integer(b1);
+		//封装类转基本类型
+		int c1 = a1.intValue();
+		//自动装箱
+		a1 = b1;
+		//自动拆箱
+		c1 = a1;
+		//获取int最值
+		c1 = Integer.MIN_VALUE;
+		//格式化输出(换行可以三种表达)
+		System.out.printf("%s killed %s, \r获得 %d金币\n", "盖伦", "提莫", 100); 
+		System.out.format("%s killed %s, %n获得 %d金币\n", "盖伦", "提莫", 100); 
+		//总长度、左对齐、补0、千分位分隔符、小数点位数、本地化表达
+		System.out.printf("%,-8d", 45632);//千分位分隔符、总长度8、左对齐
+		System.out.printf("%.5f%n", 456.32);//小数点位数5
+		System.out.printf("%010d%n", 452);//补0
+		//不同国家的千位分隔符
+        System.out.format(Locale.FRANCE,"%,.2f%n",Math.PI*10000);
+        System.out.format(Locale.US,"%,.2f%n",Math.PI*10000);
+        System.out.format(Locale.UK,"%,.2f%n",Math.PI*10000);
+        //常见转义字符，'\\'用来输出字符'\'
+        System.out.println("使用空格无法达到对齐的效果");
+        System.out.println("abc def");
+        System.out.println("ab def");
+        System.out.println("a def");
+          
+        System.out.println("使用\\t制表符可以达到对齐的效果");
+        System.out.println("abc\tdef");
+        System.out.println("ab\tdef");
+        System.out.println("a\tdef");
+         
+        System.out.println("一个\\t制表符长度是8");
+        System.out.println("12345678def");
+          
+        System.out.println("换行符 \\n");
+        System.out.println("abc\ndef");
+ 
+        System.out.println("单引号 \\'");
+        System.out.println("abc\'def");
+        System.out.println("双引号 \\\"");
+        System.out.println("abc\"def");
+        System.out.println("反斜杠本身 \\");
+        System.out.println("abc\\def");
+		
+        //比较String和StringBuffer性能
+		char d1[] = new char[10];
+		for (int i = 0; i < d1.length; i++) {
+			d1[i] = (char)(Math.random() * 100); 
+		}
+		System.out.println(d1);
+		String e1 = new String(d1);
+		StringBuffer f1 = new StringBuffer(e1);
+		String g1 = e1;
+		long begin = System.currentTimeMillis();
+		for (int i = 0; i < 10000; i++) {
+			g1 += e1;
+			i++;
+		}
+		long end = System.currentTimeMillis();
+		System.out.printf("String + 10000 次 所用时间为 %d毫秒 %n", (end - begin));
+		begin = System.currentTimeMillis();
+		for (int i = 0; i < 1000000; i++) {
+			f1.append(e1);
+			i++;
+		}
+		end = System.currentTimeMillis();
+		System.out.printf("StringBuffer append 1000000 次 所用时间为 %d毫秒 %n", (end - begin));
 	}
 }

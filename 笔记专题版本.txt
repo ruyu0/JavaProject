@@ -1,0 +1,57 @@
+专题一、数字和字符串
+
+1.1 装箱和拆箱 
+封装类：所有的基本类型，都有对应的类类型，比如int对应的类是Integer ，这种类就叫做封装类
+Number类：数字封装类有，Byte,Short,Integer,Long,Float,Double ，这些类都是抽象类Number的子类
+基本类型转封装类、封装类转基本类型（见程序Test）
+自动装箱：不需要调用构造方法，通过=符号自动把 基本类型 转换为 类类型 就叫装箱
+自动拆箱：不需要调用Integer的intValue方法，通过=就自动转换成int类型，就叫拆箱
+int的最大值可以通过其对应的封装类Integer.MAX_VALUE获取
+
+1.2 字符串转换
+数字转字符串：方法一：使用String类的静态方法valueOf  方法二：先把基本类型装箱为对象，然后调用对象的toString
+字符串转数字：调用Integer的静态方法parseInt
+
+1.3数学方法：java.lang.Math提供了一些常用的数学运算方法，并且都是以静态方法的形式存在
+四舍五入round、开方、随机数、次方、自然常数、Π
+
+1.4格式化输出（见程序Test）
+如果不使用格式化输出，就需要进行字符串连接，如果变量比较多，拼接就会显得繁琐
+使用格式化输出，就可以简洁明了
+%s 表示字符串
+%d 表示数字
+%n 表示换行
+printf和format能够达到一模一样的效果，如何通过eclipse查看java源代码 可以看到，在printf中直接调用了format
+换行符：换行符就是另起一行 --- '\n' 换行（newline）
+	回车符就是回到一行的开头 --- '\r' 回车（return）
+	在eclipse里敲一个回车，实际上是回车换行符
+	Java是跨平台的编程语言，同样的代码，可以在不同的平台使用，比如Windows,Linux,Mac
+	然而在不同的操作系统，换行符是不一样的
+	（1）在DOS和Windows中，每行结尾是 “\r\n”；
+	（2）Linux系统里，每行结尾只有 “\n”；
+	（3）Mac系统里，每行结尾是只有 "\r"。
+	为了使得同一个java程序的换行符在所有的操作系统中都有一样的表现，使用%n，就可以做到平台无关的换行（都可以用）
+总长度、左对齐、补0、千分位分隔符、小数点位数、本地化表达（见程序Test）
+
+1.5字符
+Character常见方法：isLetter(), isDigit(), isWhitespace(), isUpperCase(), isLowerCase(), toUpperCase(), toLowerCase(), toString()
+常见转义：（见程序Test）'\\'用来输出字符'\'
+
+1.6字符串
+String是final的
+immutable 是指不可改变的，比如创建了一个字符串对象String garen ="盖伦";
+不可改变的具体含义是指：不能增加长度；不能减少长度；不能插入字符；不能删除字符；不能修改字符
+一旦创建好这个字符串，里面的内容 永远 不能改变
+String 的表现就像是一个常量
+
+1.7对字符串的操作
+charAt, toCharArray, subString, split, trim, toLowerCase, toUpperCase, indexOf, lashIndexOf, contains, replaceAll, replaceFirst
+
+1.8比较字符串
+判断字符串内容相同：不能用==，用equals，equalsIgnoreCase
+startWith，endsWith
+
+1.9 StringBuffer
+是可变长的字符串
+方法：append delete insert reverse length capacity
+比较String 和 StringBuffer的性能（见程序Test）
