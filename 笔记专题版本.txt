@@ -55,3 +55,6 @@ startWith，endsWith
 是可变长的字符串
 方法：append delete insert reverse length capacity
 比较String 和 StringBuffer的性能（见程序Test）
+测试MyStringBuffer性能（见程序Test）
+10:47 2020/12/28
+

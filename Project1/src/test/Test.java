@@ -10,6 +10,7 @@ import character.Hero.EnemyCrystal;
 import character.Hero.BattleScore;
 import character.Item;
 import character.Season;
+import myStringBuffer.MyStringBuffer;
 
 public class Test {
 	public static void main(String[] args) {
@@ -139,16 +140,46 @@ public class Test {
 		long begin = System.currentTimeMillis();
 		for (int i = 0; i < 10000; i++) {
 			g1 += e1;
-			i++;
 		}
 		long end = System.currentTimeMillis();
 		System.out.printf("String + 10000 次 所用时间为 %d毫秒 %n", (end - begin));
 		begin = System.currentTimeMillis();
-		for (int i = 0; i < 1000000; i++) {
+		for (int i = 0; i < 10000000; i++) {
 			f1.append(e1);
-			i++;
 		}
 		end = System.currentTimeMillis();
-		System.out.printf("StringBuffer append 1000000 次 所用时间为 %d毫秒 %n", (end - begin));
+		System.out.printf("StringBuffer append 10000000 次 所用时间为 %d毫秒 %n", (end - begin));
+		//MyStringBuffer append性能
+		MyStringBuffer myStringBuffer = new MyStringBuffer(e1);
+		begin = System.currentTimeMillis();
+		for (int i = 0; i < 10000000; i++) {
+			myStringBuffer.append(e1);
+		}
+		end = System.currentTimeMillis();
+		System.out.printf("MyStringBuffer append 10000000次 所用时间为 %d毫秒 %n", (end - begin));
+		//MyStringBuffer delete性能
+		begin = System.currentTimeMillis();
+		int length = myStringBuffer.length();
+		for (int i = 0; i < 10000000; i++) {
+			length -= 10;
+			myStringBuffer.delete(length, length + 10);
+//			//用delete（length）最快
+//			myStringBuffer.delete(length);
+		}
+		end = System.currentTimeMillis();
+		System.out.printf("MyStringBuffer delete 10000000 次 所用时间为 %d毫秒 %n", (end - begin));
+		System.out.println(myStringBuffer);
+		//MyStringBuffer reverse
+		begin = System.currentTimeMillis();
+		StringBuffer stringBuffer = new StringBuffer(e1);
+		for (int i = 0; i < 10000000; i++) {
+			myStringBuffer.reverse();
+//			//比较StringBuffer
+//			stringBuffer.reverse();
+		}
+		end = System.currentTimeMillis();
+		System.out.printf("MyStringBuffer reverse 10000000 次所用时间为 %d 毫秒 %n", (end - begin));
+		
+		
 	}
 }
