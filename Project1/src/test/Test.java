@@ -1,5 +1,12 @@
 package test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import character.AD;
@@ -10,10 +17,11 @@ import character.Hero.EnemyCrystal;
 import character.Hero.BattleScore;
 import character.Item;
 import character.Season;
+import myException.EnemyHeroIsDeadException;
 import myStringBuffer.MyStringBuffer;
 
 public class Test {
-	public static void main(String[] args) {
+	public static void main(String[] args){
 //		//二、数值默认值
 //		int a[] = new int[10];
 //		for (int i = 0; i < a.length; i++) {
@@ -81,105 +89,173 @@ public class Test {
 //        System.out.println(h12);
 		
 		
-		//专题一
-		//基本类型转封装类
-		int b1 = 10;
-		Integer a1 = new Integer(b1);
-		//封装类转基本类型
-		int c1 = a1.intValue();
-		//自动装箱
-		a1 = b1;
-		//自动拆箱
-		c1 = a1;
-		//获取int最值
-		c1 = Integer.MIN_VALUE;
-		//格式化输出(换行可以三种表达)
-		System.out.printf("%s killed %s, \r获得 %d金币\n", "盖伦", "提莫", 100); 
-		System.out.format("%s killed %s, %n获得 %d金币\n", "盖伦", "提莫", 100); 
-		//总长度、左对齐、补0、千分位分隔符、小数点位数、本地化表达
-		System.out.printf("%,-8d", 45632);//千分位分隔符、总长度8、左对齐
-		System.out.printf("%.5f%n", 456.32);//小数点位数5
-		System.out.printf("%010d%n", 452);//补0
-		//不同国家的千位分隔符
-        System.out.format(Locale.FRANCE,"%,.2f%n",Math.PI*10000);
-        System.out.format(Locale.US,"%,.2f%n",Math.PI*10000);
-        System.out.format(Locale.UK,"%,.2f%n",Math.PI*10000);
-        //常见转义字符，'\\'用来输出字符'\'
-        System.out.println("使用空格无法达到对齐的效果");
-        System.out.println("abc def");
-        System.out.println("ab def");
-        System.out.println("a def");
-          
-        System.out.println("使用\\t制表符可以达到对齐的效果");
-        System.out.println("abc\tdef");
-        System.out.println("ab\tdef");
-        System.out.println("a\tdef");
-         
-        System.out.println("一个\\t制表符长度是8");
-        System.out.println("12345678def");
-          
-        System.out.println("换行符 \\n");
-        System.out.println("abc\ndef");
- 
-        System.out.println("单引号 \\'");
-        System.out.println("abc\'def");
-        System.out.println("双引号 \\\"");
-        System.out.println("abc\"def");
-        System.out.println("反斜杠本身 \\");
-        System.out.println("abc\\def");
+//		//专题一
+//		//基本类型转封装类
+//		int b1 = 10;
+//		Integer a1 = new Integer(b1);
+//		//封装类转基本类型
+//		int c1 = a1.intValue();
+//		//自动装箱
+//		a1 = b1;
+//		//自动拆箱
+//		c1 = a1;
+//		//获取int最值
+//		c1 = Integer.MIN_VALUE;
+//		//格式化输出(换行可以三种表达)
+//		System.out.printf("%s killed %s, \r获得 %d金币\n", "盖伦", "提莫", 100); 
+//		System.out.format("%s killed %s, %n获得 %d金币\n", "盖伦", "提莫", 100); 
+//		//总长度、左对齐、补0、千分位分隔符、小数点位数、本地化表达
+//		System.out.printf("%,-8d", 45632);//千分位分隔符、总长度8、左对齐
+//		System.out.printf("%.5f%n", 456.32);//小数点位数5
+//		System.out.printf("%010d%n", 452);//补0
+//		//不同国家的千位分隔符
+//        System.out.format(Locale.FRANCE,"%,.2f%n",Math.PI*10000);
+//        System.out.format(Locale.US,"%,.2f%n",Math.PI*10000);
+//        System.out.format(Locale.UK,"%,.2f%n",Math.PI*10000);
+//        //常见转义字符，'\\'用来输出字符'\'
+//        System.out.println("使用空格无法达到对齐的效果");
+//        System.out.println("abc def");
+//        System.out.println("ab def");
+//        System.out.println("a def");
+//          
+//        System.out.println("使用\\t制表符可以达到对齐的效果");
+//        System.out.println("abc\tdef");
+//        System.out.println("ab\tdef");
+//        System.out.println("a\tdef");
+//         
+//        System.out.println("一个\\t制表符长度是8");
+//        System.out.println("12345678def");
+//          
+//        System.out.println("换行符 \\n");
+//        System.out.println("abc\ndef");
+// 
+//        System.out.println("单引号 \\'");
+//        System.out.println("abc\'def");
+//        System.out.println("双引号 \\\"");
+//        System.out.println("abc\"def");
+//        System.out.println("反斜杠本身 \\");
+//        System.out.println("abc\\def");
+//		
+//        //比较String和StringBuffer性能
+//		char d1[] = new char[10];
+//		for (int i = 0; i < d1.length; i++) {
+//			d1[i] = (char)(Math.random() * 100); 
+//		}
+//		System.out.println(d1);
+//		String e1 = new String(d1);
+//		StringBuffer f1 = new StringBuffer(e1);
+//		String g1 = e1;
+//		long begin = System.currentTimeMillis();
+//		for (int i = 0; i < 10000; i++) {
+//			g1 += e1;
+//		}
+//		long end = System.currentTimeMillis();
+//		System.out.printf("String + 10000 次 所用时间为 %d毫秒 %n", (end - begin));
+//		begin = System.currentTimeMillis();
+//		for (int i = 0; i < 10000000; i++) {
+//			f1.append(e1);
+//		}
+//		end = System.currentTimeMillis();
+//		System.out.printf("StringBuffer append 10000000 次 所用时间为 %d毫秒 %n", (end - begin));
+//		//MyStringBuffer append性能
+//		MyStringBuffer myStringBuffer = new MyStringBuffer(e1);
+//		begin = System.currentTimeMillis();
+//		for (int i = 0; i < 10000000; i++) {
+//			myStringBuffer.append(e1);
+//		}
+//		end = System.currentTimeMillis();
+//		System.out.printf("MyStringBuffer append 10000000次 所用时间为 %d毫秒 %n", (end - begin));
+//		//MyStringBuffer delete性能
+//		begin = System.currentTimeMillis();
+//		int length = myStringBuffer.length();
+//		for (int i = 0; i < 10000000; i++) {
+//			length -= 10;
+//			myStringBuffer.delete(length, length + 10);
+////			//用delete（length）最快
+////			myStringBuffer.delete(length);
+//		}
+//		end = System.currentTimeMillis();
+//		System.out.printf("MyStringBuffer delete 10000000 次 所用时间为 %d毫秒 %n", (end - begin));
+//		System.out.println(myStringBuffer);
+//		//MyStringBuffer reverse
+//		begin = System.currentTimeMillis();
+//		StringBuffer stringBuffer = new StringBuffer(e1);
+//		for (int i = 0; i < 10000000; i++) {
+//			myStringBuffer.reverse();
+////			//比较StringBuffer
+////			stringBuffer.reverse();
+//		}
+//		end = System.currentTimeMillis();
+//		System.out.printf("MyStringBuffer reverse 10000000 次所用时间为 %d 毫秒 %n", (end - begin));
 		
-        //比较String和StringBuffer性能
-		char d1[] = new char[10];
-		for (int i = 0; i < d1.length; i++) {
-			d1[i] = (char)(Math.random() * 100); 
-		}
-		System.out.println(d1);
-		String e1 = new String(d1);
-		StringBuffer f1 = new StringBuffer(e1);
-		String g1 = e1;
-		long begin = System.currentTimeMillis();
-		for (int i = 0; i < 10000; i++) {
-			g1 += e1;
-		}
-		long end = System.currentTimeMillis();
-		System.out.printf("String + 10000 次 所用时间为 %d毫秒 %n", (end - begin));
-		begin = System.currentTimeMillis();
-		for (int i = 0; i < 10000000; i++) {
-			f1.append(e1);
-		}
-		end = System.currentTimeMillis();
-		System.out.printf("StringBuffer append 10000000 次 所用时间为 %d毫秒 %n", (end - begin));
-		//MyStringBuffer append性能
-		MyStringBuffer myStringBuffer = new MyStringBuffer(e1);
-		begin = System.currentTimeMillis();
-		for (int i = 0; i < 10000000; i++) {
-			myStringBuffer.append(e1);
-		}
-		end = System.currentTimeMillis();
-		System.out.printf("MyStringBuffer append 10000000次 所用时间为 %d毫秒 %n", (end - begin));
-		//MyStringBuffer delete性能
-		begin = System.currentTimeMillis();
-		int length = myStringBuffer.length();
-		for (int i = 0; i < 10000000; i++) {
-			length -= 10;
-			myStringBuffer.delete(length, length + 10);
-//			//用delete（length）最快
-//			myStringBuffer.delete(length);
-		}
-		end = System.currentTimeMillis();
-		System.out.printf("MyStringBuffer delete 10000000 次 所用时间为 %d毫秒 %n", (end - begin));
-		System.out.println(myStringBuffer);
-		//MyStringBuffer reverse
-		begin = System.currentTimeMillis();
-		StringBuffer stringBuffer = new StringBuffer(e1);
-		for (int i = 0; i < 10000000; i++) {
-			myStringBuffer.reverse();
-//			//比较StringBuffer
-//			stringBuffer.reverse();
-		}
-		end = System.currentTimeMillis();
-		System.out.printf("MyStringBuffer reverse 10000000 次所用时间为 %d 毫秒 %n", (end - begin));
+//		//专题二 日期和日历
+//		//日期转字符串 y代表年, M代表月份，d代表，H代表24小时制的时，h代表12小时制的时，m代表分，s代表秒，S代表毫秒
+//		SimpleDateFormat a2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+//		Date b2 = new Date();
+//		System.out.println(a2.format(b2));//调整字母个数看看格式的变化，最后使用常用的个数
+//		//字符串转日期
+//		try {
+//			b2 = a2.parse("2012-10-32 17:59:22.352");//变成11月1日！！！
+//			System.out.println(b2);
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			System.out.println("Error");
+//		}
+//		//Calendar与Date的互相转换
+//		Calendar c2 = Calendar.getInstance();
+//		b2 = c2.getTime();
+//		System.out.println(b2);
+//		c2.setTime(b2);
+//		//翻日历
+//		c2.add(Calendar.DAY_OF_WEEK, 2);
+//		System.out.println(c2.getTime());
+//		c2.set(Calendar.YEAR, 2015);
+//		System.out.println(c2.getTime());
 		
+//		//专题三 异常处理
+////		//多异常分开catch
+////		try {
+////			InputStream a3 = new FileInputStream(new File("abc"));
+////		} catch (IOException e) {
+////			// TODO: handle exception
+////		}catch (ClassCastException e) {
+////			// TODO: handle exception
+////		}
+//		//多异常一起catch
+//		try {
+//			InputStream a3 = new FileInputStream(new File("abc"));
+//		} catch (IOException | ClassCastException e) {
+//			// TODO: handle exception
+//		}
+//		//throw 和 throws
+//		try {
+//			openAFile(new File("abc"));
+//		}catch (IOException e) {
+//			// TODO: handle exception
+//			System.out.println("Error");
+//		}
+//		//自定义异常类
+//		Hero b3 = new ADHero("盖伦");
+//		Hero c3 = new APHero("提莫");
+//		try {
+//		b3.attack(c3);
+//		}catch (EnemyHeroIsDeadException e) {
+//			// TODO: handle exception
+//			System.out.println(e.getMessage());
+//			e.printStackTrace();
+//		}
+		
+		
+	}
+	
+	private static void openAFile(File f) throws IOException{
+		try {
+			InputStream inputStream = new FileInputStream(f);
+			
+		} catch (IOException e) {
+			// TODO: handle exception
+			throw e;
+		}
 		
 	}
 }

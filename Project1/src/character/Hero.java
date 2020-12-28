@@ -1,9 +1,11 @@
 package character;
 
+import myException.EnemyHeroIsDeadException;
+
 public abstract class Hero {
 	protected String name; //姓名
     
-    float hp; //血量
+    int hp = 0; //血量
        
     float armor; //护甲
        
@@ -17,12 +19,18 @@ public abstract class Hero {
     }
      
     //带两个参数的构造方法
-    public Hero(String heroname,float herohp){ 
+    public Hero(String heroname,int herohp){ 
         name = heroname;
         hp = herohp;
     }
     
     public abstract void attack();
+    
+    public void attack(Hero hero) throws EnemyHeroIsDeadException{
+    	if (hero.hp == 0)
+    		throw new EnemyHeroIsDeadException(hero.name + "已经死亡无法攻击");
+    	System.out.println(name + "攻击了" + hero.name);
+    }
     
     public void useItem(Item i) {
     	System.out.println(name + "使用了一个道具");
