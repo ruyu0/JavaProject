@@ -2,8 +2,17 @@ package test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -244,6 +253,105 @@ public class Test {
 //			System.out.println(e.getMessage());
 //			e.printStackTrace();
 //		}
+		
+//		//专题四
+//		File a4 = new File("Directory1");
+//		File b4 = new File("Directory/b4.txt");
+//		//创建a4,用mkdirs创建父文件，不用mkdir
+//		b4.getParentFile().mkdirs();
+//		try {
+//			b4.createNewFile();
+////			//在jvm结束删除文件
+////			b4.deleteOnExit();
+//		} catch (IOException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
+//		//最后修改时间
+//		System.out.println(new Date(b4.lastModified()));
+//		b4.setLastModified(400);
+//		//重命名
+//		b4.renameTo(new File("Directory/b4rename.txt"));
+//		//字节流的读取和写入
+//		//使用try()的方式关闭流
+//		//测试文件c4.txt是utf-8编码
+//		try (
+//				InputStream c4 = new FileInputStream(new File("c4.txt"));
+//				OutputStream e4 = new FileOutputStream("c4.txt", true);//true参数kong控制写入开头和结尾
+//				){
+//			//不同方式写入
+//			e4.write("写入一行数据\n".getBytes(Charset.forName("utf-8")));
+//			e4.write("写入一行数据\n".getBytes());
+//			byte[] d4 = new byte[(int)new File("c4.txt").length()];
+//			c4.read(d4);
+//			//不同方式编码读取的字节数组
+//			System.out.println(new String(d4));
+//			System.out.println(new String(d4, Charset.forName("utf-8")));
+//		}catch (IOException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
+//		//字符流的读取和写入
+//		//在try中关闭
+//		try {
+//			Writer g4 = new FileWriter("f4.txt", true);
+//			Reader f4 = new FileReader("f4.txt");
+//			g4.write("写入一行数据\n".toCharArray());
+//			g4.close();
+//			char[] h4 = new char[(int)new File("f4.txt").length() / 2];
+//			f4.read(h4);
+//			System.out.println(h4);
+//			f4.close();
+//		}catch (IOException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
+//		//字符流正确读写中文
+//		//使用OutputStreamWriter,OutputStreamWriter
+//		//在finally中关闭
+//		//测试文件i4.txt是utf-8编码
+//		InputStreamReader i4 = null;
+//		OutputStreamWriter j4 = null;
+//		try {
+//			j4 = new OutputStreamWriter(new FileOutputStream("i4.txt", true), Charset.forName("utf-8"));
+//			j4.write("写入一行数据\n");
+//			
+//		} catch (IOException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}finally {
+//			if (j4 != null) {
+//				try {
+//					j4.close();
+//				} catch (IOException e2) {
+//					// TODO: handle exception
+//					e2.printStackTrace();
+//				}
+//			}
+//		}
+//		try {
+//			i4 = new OutputStreamWriter(new FileInputStream("i4.txt"), Charset.forName("utf-8"));
+////			//比较使用默认编码gbk
+////			i4 = new InputStreamReader(new FileInputStream("i4.txt"));
+//			char[]	k4 = new char[(int)new File("i4.txt").length() / 2];
+//			i4.read(k4);
+//			System.out.println(new String(k4));
+//		}catch (IOException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}finally {
+//			if (null != i4) {
+//				try {
+//					i4.close();
+//				} catch (IOException e2) {
+//					// TODO: handle exception
+//					e2.printStackTrace();
+//				}
+//			}
+//		}
+		
+		
+		
 		
 		
 	}

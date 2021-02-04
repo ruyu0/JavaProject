@@ -73,12 +73,12 @@ Calendar与Date进行转换：getTime方法；setTime方法
 翻日历：add方法，在原日期上增加年/月/日；set方法，直接设置年/月/日（见程序Test）
 
 专题三 异常处理
-1.1 异常定义： 导致程序的正常流程被中断的事件，叫做异常
-1.2 
+3.1 异常定义： 导致程序的正常流程被中断的事件，叫做异常
+3.2 
 多异常处理（见程序Test）：1、分别进行catch 2、放在一个catch里统一捕捉 ：从 JDK7开始支持，好处是捕捉的代码更紧凑，不足之处是，一旦发生异常，不能确定到底是哪种异常，需要通过instanceof 进行判断具体的异常类型
 finally：无论是否出现异常，finally中的代码都会被执行
 throws： 处理办法也是两种，要么是try catch处理掉，要么也是抛出去。
-1.3 异常分类
+3.3 异常分类
 异常分类： 可查异常，运行时异常和错误3种 ，其中，运行时异常和错误又叫非可查异常
 可查异常： CheckedException
 可查异常即必须进行处理的异常，要么try catch住,要么往外抛，谁调用，谁处理，比如 FileNotFoundException，如果不处理，编译器，就不让你通过
@@ -89,6 +89,31 @@ Java之所以会设计运行时异常的原因之一，是因为下标越界，�
 错误Error，指的是系统级别的异常，通常是内存用光了，在默认设置下，一般java程序启动的时候，最大可以使用16m的内存
 如例不停的给StringBuffer追加字符，很快就把内存使用光了。抛出OutOfMemoryError，与运行时异常一样，错误也是不要求强制捕捉的
 有：AWTError、VirtualMachineError(StackOverflowError\OutOfMemoryError)
-1.4 Throwable类
+3.4 Throwable类
 Exception和Error都继承了该类，所以在捕捉的时候，也可以使用Throwable进行捕捉
-1.5自定义异常类（见程序Test）
+3.5自定义异常类（见程序Test）
+
+10:19 2021/1/29
+专题四 IO
+4.1 文件和文件夹对象File 使用相对路径和绝对路径创建
+4.1.1 方法：exists	isDirectory	isFile	length	lastModified（见Test）setLastModified（见Test）	renameTo()（见Test）
+	list()和listFile()	getParent()和getParentFile()	mkdir和mkdirs	createNewFile()和getParentFile().mkdir（见文件Test）	listRoots	delete和deleteOnExit
+4.2 流就是一系列数据
+输入流： InputStream，Reader(unicode编码双字节字符)
+FileInputStream	FilterInputStream	SequenceInputStream	ByteArrayInputStream	StringBufferInputStream	PipedInputStream
+CharArrayReader	BufferedReader(LineNumberReader)	FilterReader	InputStreamReader(FileReader)		StringReader
+FilterInputStream:	BufferedInputStream	PushbackInputSteam	LineNumberInputStream	DateInputStream(ObjectInputStream)	
+输出流：OutputStream，Writer
+FileOutputSteam	FilterOutputSteam		无		ByteArrayOutputStream		无		PipedOutputStream
+CharArrayWriter	BufferedWriter(无）			FilterWriter	OutputStreamWriter(FileWriter)		StringWriter	PrintWriter
+FilterOutputStream:	BufferedOutputStream	无			无			DateOutputStream(ObjectOutputStream)		PrintStream
+4.3 字节流的读取和写入、含中文文件（见程序Test)
+4.4 关闭流的方法：
+	在try中关闭：如果文件不存在，或者读取的时候出现问题而抛出异常，那么就不会执行这一行关闭流的代码，存在巨大的资源占用隐患。 不推荐使用；
+	在finally关闭：标准的严谨的关闭流的方式；
+	使用try()的方式；
+4.5 字符流的读取的写入、含中文文件（见程序Test)
+23:32 2021/2/4
+4.6 常见编码 ISO-8859-1 ASCII 数字和西欧字母；GBK GB2312 BIG5 中文；UNICODE (统一码，万国码)
+	字节流的正确读写中文（见4.3）、字符流的正确读取中文（见test程序）
+	默认编码：Charset.defaultCharset()
