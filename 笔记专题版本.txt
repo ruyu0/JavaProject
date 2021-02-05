@@ -115,5 +115,18 @@ FilterOutputStream:	BufferedOutputStream	无			无			DateOutputStream(ObjectOutp
 4.5 字符流的读取的写入、含中文文件（见程序Test)
 23:32 2021/2/4
 4.6 常见编码 ISO-8859-1 ASCII 数字和西欧字母；GBK GB2312 BIG5 中文；UNICODE (统一码，万国码)
+20:08 2021/2/5
+4.7 缓存流读写（见程序Test）
+4.8 数据流 要用DataInputStream 读取一个文件，这个文件必须是由DataOutputStream 写出的，否则会出现EOFException；
+	因为DataOutputStream 在写出的时候会做一些特殊标记，只有DataInputStream 才能成功的读取。
+	使用数据流的writeUTF()和readUTF() 可以进行数据的格式化顺序读写
+4.9 对象流 一个对象以流的形式进行传输，叫做序列化。 该对象所对应的类，必须是实现Serializable接口
 	字节流的正确读写中文（见4.3）、字符流的正确读取中文（见test程序）
 	默认编码：Charset.defaultCharset()
+4.10 System.out 是常用的在控制台输出数据的 
+System.in 可以从控制台输入数据：使用System.in.read虽然可以读取数据，但是很不方便，使用Scanner就可以逐行读取了
+4.11 解决EOFException
+	在存入对象的时候使用集合的方式来存储对象,这样在获取时就只需要获取集合,然后遍历集合即可，这种是将本来的多个对象转化为一个集合对象,再从集合对象中去获取数据；
+	在存入对象前或者后面加一个标志,可以在第一位置加一个int类型的值来记录存入的对象个数,也可以在最后加入一个null来做结束标识；
+	使用异常处理方式
+	

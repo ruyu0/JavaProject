@@ -1,8 +1,12 @@
 package character;
 
+import java.io.Serializable;
+
 import myException.EnemyHeroIsDeadException;
 
-public abstract class Hero {
+public abstract class Hero implements Serializable{
+	//表示这个类当前的版本，如果有了变化，比如新设计了属性，就应该修改这个版本号
+    private static final long serialVersionUID = 1L;
 	protected String name; //姓名
     
     int hp = 0; //血量
@@ -23,6 +27,12 @@ public abstract class Hero {
         name = heroname;
         hp = herohp;
     }
+    
+    @Override
+    public String toString() {
+    	// TODO Auto-generated method stub
+    	return this.name;
+    }	
     
     public abstract void attack();
     

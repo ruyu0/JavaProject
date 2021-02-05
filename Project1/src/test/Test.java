@@ -1,5 +1,7 @@
 package test;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -8,8 +10,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -283,7 +288,7 @@ public class Test {
 //			e4.write("写入一行数据\n".getBytes(Charset.forName("utf-8")));
 //			e4.write("写入一行数据\n".getBytes());
 //			byte[] d4 = new byte[(int)new File("c4.txt").length()];
-//			c4.read(d4);
+//			c4.read(d4);//写入是立刻写到文件中的，所以可以立刻读取到
 //			//不同方式编码读取的字节数组
 //			System.out.println(new String(d4));
 //			System.out.println(new String(d4, Charset.forName("utf-8")));
@@ -297,6 +302,7 @@ public class Test {
 //			Writer g4 = new FileWriter("f4.txt", true);
 //			Reader f4 = new FileReader("f4.txt");
 //			g4.write("写入一行数据\n".toCharArray());
+//			//写入的内容暂时没有写到文件中，要关闭写才行,或者使用flush
 //			g4.close();
 //			char[] h4 = new char[(int)new File("f4.txt").length() / 2];
 //			f4.read(h4);
@@ -330,7 +336,7 @@ public class Test {
 //			}
 //		}
 //		try {
-//			i4 = new OutputStreamWriter(new FileInputStream("i4.txt"), Charset.forName("utf-8"));
+//			i4 = new InputStreamReader(new FileInputStream("i4.txt"), Charset.forName("utf-8"));
 ////			//比较使用默认编码gbk
 ////			i4 = new InputStreamReader(new FileInputStream("i4.txt"));
 //			char[]	k4 = new char[(int)new File("i4.txt").length() / 2];
@@ -348,6 +354,52 @@ public class Test {
 //					e2.printStackTrace();
 //				}
 //			}
+//		}
+//		//缓存流读写
+//		try(
+//
+//				//使用PrintWriter写入
+//				PrintWriter m4 = new PrintWriter(new File("l4.txt"));
+////				BufferedWriter m4 = new BufferedWriter(new FileWriter("l4.txt"));
+//				BufferedReader l4 = new BufferedReader(new FileReader("l4.txt"));
+////				//使用utf-8来读取缓存流
+////				BufferedReader l4 = new BufferedReader(
+////						new InputStreamReader(
+////								new FileInputStream("l4.txt"), 
+////								Charset.forName("utf-8")));
+//				){
+//			m4.write("写入一行数据\n");
+//			m4.flush();
+//			char[] n4 = new char[(int)new File("l4.txt").length() / 2];
+//			l4.read(n4);
+//			
+//			System.out.println(n4);
+//		}catch (IOException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
+//		//对象流
+//		try(
+//				ObjectOutputStream o4 = new ObjectOutputStream(new FileOutputStream("o4.data"));
+//				ObjectInputStream p4 = new ObjectInputStream(new FileInputStream("o4.data"));
+//				){
+//			Hero[] q4 = new Hero[] {
+//					new ADHero("ez"),
+//					new APHero("提莫"),
+//					new ADHero("盖伦"),
+//					null//添加null来判断流读取完!!!!
+//			};
+//			for (Hero e : q4) {
+//				o4.writeObject(e);
+//			}
+//			Hero r4 = (Hero)p4.readObject();
+//			while (r4 != null) {
+//				System.out.println(r4);
+//				r4 = (Hero)p4.readObject();
+//			}
+//		}catch (IOException | ClassNotFoundException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
 //		}
 		
 		
