@@ -19,9 +19,15 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Queue;
 
 import character.AD;
 import character.ADHero;
@@ -400,6 +406,36 @@ public class Test {
 //		}catch (IOException | ClassNotFoundException e) {
 //			// TODO: handle exception
 //			e.printStackTrace();
+//		}
+		
+//		//专题五
+//		//数组和ArrayList的互换
+//		ArrayList<Hero> a5 = new ArrayList<>();
+//		a5.add(new ADHero("ez"));
+//		a5.add(new APHero("提莫"));
+//		//ArrayList转数组
+//		Hero[] b5 = a5.toArray(new Hero[] {});
+//		//数组转ArrayList
+//		//方法一
+//		a5 = new ArrayList<Hero>(Arrays.asList(b5));
+//		//方法二
+//		Collections.addAll(a5, b5);
+//		//方法三
+//		a5.addAll(Arrays.asList(b5));
+//		//方法四：使用Spring框架将数组转换为List?????
+//		//Spring框架中的CollectionUtils提供了几个方法来将数组转换为Arraylist。
+//		//例如：CollectionUtils.arrayToList()。当然，返回的List是不可修改的，不能add()或remove()元素。
+//		for (Hero e : b5) {
+//			System.out.println(e);
+//		}
+//		for (Hero eHero : a5) {
+//			System.out.println(eHero);
+//		}
+//		//Iterator方法遍历
+//		System.out.println("iterator方法遍历");
+//		Iterator<Hero> c5 = a5.iterator();
+//		while(c5.hasNext()) {
+//			System.out.println(c5.next());
 //		}
 		
 		
