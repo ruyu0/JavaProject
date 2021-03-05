@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import myException.EnemyHeroIsDeadException;
 
-public abstract class Hero implements Serializable{
+public abstract class Hero implements Serializable, Comparable<Hero>{
 	//表示这个类当前的版本，如果有了变化，比如新设计了属性，就应该修改这个版本号
     private static final long serialVersionUID = 1L;
 	protected String name; //姓名
@@ -33,6 +33,12 @@ public abstract class Hero implements Serializable{
     	// TODO Auto-generated method stub
     	return this.name;
     }	
+    
+    @Override
+    public int compareTo(Hero o) {
+    	// TODO Auto-generated method stub
+    	return name.compareTo(o.name);
+    }
     
     public abstract void attack();
     

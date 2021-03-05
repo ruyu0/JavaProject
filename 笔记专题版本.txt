@@ -145,5 +145,6 @@ https://blog.csdn.net/zty1317313805/article/details/82771034
 实现了List接口外，LinkedList还实现了双向链表结构Deque：addLast, addFirst, getLast, getFirst, removeLast, removeFirst
 实现了Queue接口：offer, poll, peek
 5.2.2 Stack : push, pop
+5.2.3 二叉树：三个遍历，层序遍历
 
 

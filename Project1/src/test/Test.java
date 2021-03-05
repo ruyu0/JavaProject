@@ -39,6 +39,7 @@ import character.Item;
 import character.Season;
 import myException.EnemyHeroIsDeadException;
 import myStringBuffer.MyStringBuffer;
+import mytree.BTree;
 
 public class Test {
 	public static void main(String[] args){
@@ -438,8 +439,22 @@ public class Test {
 //			System.out.println(c5.next());
 //		}
 		
+		BTree<Integer> e5 = new BTree<Integer>();
+		Integer f5[] = new Integer[100];
+		for (int i = 0; i < f5.length; i++) {
+//			f5[i] = new Integer((int)(Math.random() * 100));
+			f5[i] = i;
+		}
 		
-		
+		long g5 = System.currentTimeMillis();
+		e5.createBTreesec(f5);
+		long h5 = System.currentTimeMillis();
+		System.out.println("used " + (h5 - g5) + "ms");
+		System.out.println(e5.data);
+		//三大遍历
+		e5.postOrderTraverse();
+		//层序遍历
+		e5.levelOrderTraverse();
 		
 		
 	}
