@@ -6,6 +6,10 @@ public class APHero extends Hero implements AP{
 		super(heroname);
 	}
 
+	public APHero(String heroname,int herohp){ 
+        super(heroname, herohp);
+    }
+
 	@Override
 	public void attack() {
 		// TODO Auto-generated method stub

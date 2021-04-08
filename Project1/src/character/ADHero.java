@@ -12,6 +12,10 @@ public class ADHero extends Hero implements AD{
 		// TODO Auto-generated constructor stub
 	}
 
+	public ADHero(String heroname,int herohp){ 
+        super(heroname, herohp);
+    }
+	
 	@Override
 	public void attack() {
 		physicAttack();

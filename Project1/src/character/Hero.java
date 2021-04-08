@@ -28,6 +28,14 @@ public abstract class Hero implements Serializable, Comparable<Hero>{
         hp = herohp;
     }
     
+    public int getHp() {
+		return hp;
+	}
+    
+    public void setHp(int hp) {
+		this.hp = hp;
+	}
+    
     @Override
     public String toString() {
     	// TODO Auto-generated method stub
@@ -37,7 +45,9 @@ public abstract class Hero implements Serializable, Comparable<Hero>{
     @Override
     public int compareTo(Hero o) {
     	// TODO Auto-generated method stub
-    	return name.compareTo(o.name);
+    	if (o.hp > hp) return -1;
+    	if (o.hp < hp) return 1;
+    	else return 0;
     }
     
     public abstract void attack();
