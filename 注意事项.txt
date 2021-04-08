@@ -1,0 +1,25 @@
+1、eclipse的控制台输出有限制
+
+2、数组的几种方式
+a 先声明，再分配空间
+      int [] array1;            //定义数组的类型变量
+      array1 = new int[5];     //为数组分配存储空间
+b 声明并分配空间
+      int [] array2 = new int[5];
+      
+c 声明并赋值
+      int [] array3 = new int[] {11,22,33,44,55,66,77,88,99};    
+d 声明并赋值（简）
+      int [] array4 = {5,6,7,8,9};
+ab方式有默认初始化值0，cd方式就不用声明大小了
+
+3、重写equals方法的原则（见程序C:\Users\ruyu\Documents\GitHub\JavaProject\Project1\src\myHashMap\MyEntry.java)
+https://www.jianshu.com/p/d8c7046e9434
+见Object的源码
+自反性原则：对于任何非空引用x，x.equals(x)应该返回true
+对称性原则：对于任何应用x,y的情形，如果想x.equals(y)返回true，那么y.equals(x),也应该返回true。
+传递性
+内部成员的null处理
+
+4.java.util.Arrays$ArrayList和java.util.ArrayList
+https://segmentfault.com/a/1190000014170298

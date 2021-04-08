@@ -131,12 +131,15 @@ System.in 可以从控制台输入数据：使用System.in.read虽然可以读�
 	使用异常处理方式
 	
 21:37 2021/2/6
-专题五 集合框架
+专题五 集合框架 （java集合分为Collection和Map两种体系）
 5.1 ArrayList 实现了List接口
 5.1.1 数组的局限性：容量限定；ArrayList容器的容量"capacity"会随着对象的增加，自动增长 
 5.1.2 常用方法
 	add	contains	get	indexof	remove	set(用于替换指定位置的元素)	size	addAll	clear
 	数组和ArrayList的转换，toArray(见test):如果要转换为一个Hero数组，那么需要传递一个Hero数组类型的对象给toArray()，这样toArray方法才知道，你希望转换为哪种类型的数组，否则只能转换为Object数组
+	asList接受的参数是T .... t，泛型不能是基本类型，不能用基本类型的数组转list，会识别成数组的list。用基本类型的对象类。
+	返回的对象是Arrays的内部类，对list的操作仍然反映在原数组上，因此这个list是定长的，不支持add、remove操作；
+
 https://blog.csdn.net/zty1317313805/article/details/82771034
 5.1.3 遍历
 	用for循环；用增强型for（无下标，无法初始化）；用iterator（见程序Test）
@@ -146,5 +149,62 @@ https://blog.csdn.net/zty1317313805/article/details/82771034
 实现了Queue接口：offer, poll, peek
 5.2.2 Stack : push, pop
 5.2.3 二叉树：三个遍历，层序遍历
+16:49 2021/3/7
+5.2.4 HashMap<key, value>
+健不能重复，值可以重复，键重复会覆盖
+比较查找内容的性能（ArrayList vs HashMap)(见程序Test）
+get和containsKey有区别
+5.2.5 HashSet<T>
+Set中的元素，不能重复,既不是按照插入顺序，也不是按照hashcode的顺序， 不同jvm版本顺序不同
+ * It makes no guarantees as to the iteration order of the set; 
+ * in particular, it does not guarantee that the order will remain constant over time. 
+HashSet自身并没有独立的实现，而是在里面封装了一个Map，HashSet作为Map的key，而所有value是一个名为PRESENT的static的Object对象
+解决大量重复数据中有几种数据的问题（见Test)
+5.2.6 Collection
+是一个接口，子接口有List，Deque，Queue，Set
+5.2.7 Collections是一个类，容器的工具类,就如同Arrays是数组的工具类（见Test）
+reverse
+shuffle 混淆List中数据的顺序
+sort 对List中的数据进行排序
+swap 交换两个数据的位置
+rotate 把List中的数据，向右滚动指定单位的长度
+synchronizedList 把非线程安全的List转换为线程安全的List（未完成）
+5.3.1 比较ArrayList和HashSet
+ArrayList: 有顺序，HashSet: 无顺序
+List中的数据可以重复，Set中的数据不能够重复
+重复判断标准是:
+首先看hashcode是否相同
+如果hashcode不同，则认为是不同数据
+如果hashcode相同，再比较equals，如果equals相同，则是相同数据，否则是不同数据
+5.3.2 ArrayList和LinkedList比较
+ArrayList 插入，删除数据慢，LinkedList， 插入，删除数据快（见Test）
+ArrayList是顺序结构，所以定位很快，指哪找哪。LinkedList 是链表结构，定位慢，必须得一个一个的数过去
+5.3.3 HashMap和HashTable比较
+继承：HashTable继承自Dirctionary，HashMap继承自AbstractMap，二者均实现了Map接口；
+线程安全性：HashTable的方法是同步的，即线程安全的。HaspMap的方法不是同步的，线程安全的。在多线程并发的情况下，可直接使用HashTable；要使用HashMap，就需要对HashMap的同步处理（见Test，未完成）
+键值：HashTable中不允许有null键和null值，HashMap中允许出现一个null键，可以存在一个或者多个键的值都为null。
+	程序中，对于HashMap，如果使用get(参数为 键)方法时，返回结果为null，可能是该键不存在，也可能是该键对应的值为null，这就出现了结果的二义性。
+	因此，在HashMap中，使用get()方法来查询键对应的值，应该先使用containskey()方法判断是否存在该键。（见程序Test）
+遍历：这两个在遍历方式的实现不同。HashTable和HashMap两者都实现了Iterator。但是，由于历史原因，HashTable还使用了Enumeration。
+哈希值：HashTable是直接使用对象的hashCode。HashMap是重新计算hash值。
+扩容：HashTable和HashMap的底层实现的数组和初始大小和扩容方式。HashTable初始大小为11，并且每次扩容都为：2*old+1。HashMap的默认大小为16，并且一 定是2的指数，每次扩容都为old*2。
+5.3.4 集合中的几种set（比较顺序不同，见Test）
+HashSet：哈希表结构，底层由HashMap实现，无特定顺序，不同版本虚拟机的顺序不同
+LinkedListSet：按照插入顺序
+TreeSet：也是基于Map来实现，具体实现TreeMap，其底层结构为红黑树（特殊的二叉查找树）
+	具有排序功能，分为自然排序(123456)和自定义排序两类，默认是自然排序
+5.4.1 集合框架hashcode原理
+HashMap查找比List查找快，原因：每个非基本类型对象都要对应的hashcode，查找时就不用一个一个比较相同，先找到对应的hashcode，再找值
+（见Test）自定义字符串的hashcode：
+	如下是Java API提供的String的hashcode生成办法；
+	hash=s[0]∗31^(n−1) +s[1]∗31 ^(n−2)+...+s[n−1]=(...(s[0]∗31+s[1])∗31+s[2])∗31+...)+s[n−1]
+	s[0] 表示第一位字符
+	n表示字符串的长度
+(见Test)自定义HashMap
+（见Test）比较HashMap和ArrayList的性能
+5.4.2 比较器（见Test）
+5.4.3 聚合操作 （未完成）
+JDK8之后，引入了对集合的聚合操作，可以非常容易的遍历，筛选，比较集合中的元素。
+0:46 2021/4/4
 
 

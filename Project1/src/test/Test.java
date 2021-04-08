@@ -24,20 +24,30 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Queue;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import character.AD;
+import character.ADAPHero;
 import character.ADHero;
 import character.APHero;
 import character.Hero;
 import character.Hero.EnemyCrystal;
+import comparator.HeroComparatorByHp;
 import character.Hero.BattleScore;
 import character.Item;
 import character.Season;
 import myException.EnemyHeroIsDeadException;
+import myHashMap.MyHashMap;
 import myStringBuffer.MyStringBuffer;
 import mytree.BTree;
 
@@ -439,23 +449,267 @@ public class Test {
 //			System.out.println(c5.next());
 //		}
 		
-		BTree<Integer> e5 = new BTree<Integer>();
-		Integer f5[] = new Integer[100];
-		for (int i = 0; i < f5.length; i++) {
-//			f5[i] = new Integer((int)(Math.random() * 100));
-			f5[i] = i;
+//		BTree<Integer> e5 = new BTree<Integer>();
+//		Integer f5[] = new Integer[100];
+//		for (int i = 0; i < f5.length; i++) {
+////			f5[i] = new Integer((int)(Math.random() * 100));
+//			f5[i] = i;
+//		}
+//		
+//		long g5 = System.currentTimeMillis();
+//		e5.createBTreesec(f5);
+//		long h5 = System.currentTimeMillis();
+//		System.out.println("used " + (h5 - g5) + "ms");
+//		System.out.println(e5.data);
+//		//三大遍历
+//		e5.postOrderTraverse();
+//		//层序遍历
+//		e5.levelOrderTraverse();
+		
+		//比较使用HashMap查找的方法性能，找出数量和所在位置
+		//准备一个ArrayList其中存放3000000(三百万个)Integer对象，其名称是随机的,格式是[4位随机数]
+		ArrayList<Integer> i5 = new ArrayList<>();
+		for (int i = 0; i < 3000000; i++) {
+			//eclipse输出有限制，没办法只能是6622，具体可以通过cmd测试
+			i5.add((int)(Math.random() * 6622));
 		}
+//		//把值相同的数据所在的ArrayList的位置存在一个List中，这个List作为一个value，这个数据值作为一个key，存入HashMap中
+//		HashMap<Integer, List<Integer>> j5 = new HashMap<>();
+//		for (int i = 0; i < 3000000; i++) {
+//			Integer temp = i5.get(i);
+//			if (j5.containsKey(temp)) {
+//				j5.get(temp).add(i);
+//			}
+//			else {
+//				List<Integer> tempList = new ArrayList<>();
+//				tempList.add(i);
+//				j5.put(temp, tempList);
+//			}
+//		}
+//		//测试ArrayList的查找
+//		int k5 = (int)(Math.random() * 10000);
+//		int l5 = 0;
+//		long m5 = System.currentTimeMillis();
+//		for (int i = 0; i < 3000000; i++) {
+//			if (i5.get(i) == k5) {
+////				System.out.print(i + " ");
+//				l5++;
+//			}
+//		}
+//		System.out.println(l5);
+//		long n5 = System.currentTimeMillis();
+//		System.out.println("used " + (n5 - m5) + "ms");
+//		//测试HashMap的查找
+//		m5 = System.currentTimeMillis();
+//		List<Integer> o5 = j5.get(new Integer(k5));
+////		for (int i = 0; i < o5.size(); i++) {
+////			System.out.print(o5.get(i) + " ");
+////		}
+//		System.out.println(o5.size());
+//		n5 = System.currentTimeMillis();
+//		System.out.println("used " + (n5 - m5) + "ms");
 		
-		long g5 = System.currentTimeMillis();
-		e5.createBTreesec(f5);
-		long h5 = System.currentTimeMillis();
-		System.out.println("used " + (h5 - g5) + "ms");
-		System.out.println(e5.data);
-		//三大遍历
-		e5.postOrderTraverse();
-		//层序遍历
-		e5.levelOrderTraverse();
+//		//HashSet顺序不确定，不同jvm版本顺序不同
+//		Set<Integer> p5 = new HashSet<>();
+//		//从10 到 1插入
+//		for (int i = 10; i > 0; i--) {
+//			p5.add(i);
+//		}
+//		//Set没有get方法，用迭代遍历
+//		//从1 到10 输出
+//		for (int e : p5) {
+//			System.out.print(e + " ");
+//		}
+//		System.out.println();
+//		//找出重复数据的数据种数
+//		long q5 = System.currentTimeMillis();
+//		p5 = new HashSet<>();
+//		p5.addAll(i5);
+//		for (Integer e : p5)
+//			System.out.print(e + " ");
+//		System.out.println();
+//		System.out.println("total " + p5.size());
+//		System.out.println("used " + (System.currentTimeMillis() - q5) + "ms");
 		
+//		//Collections
+//		//不能用基本类型的数组转list，会识别成数组的list表
+//		List<Integer> r5 = Arrays.asList(7, 2, 3, 4, 6, 5, 8);
+//		for (Integer integer : r5) {
+//			System.out.print(integer + " ");
+//		}
+//		System.out.println();
+////		Collections.reverse(r5);
+////		Collections.shuffle(r5);
+////		Collections.sort(r5);
+////		Collections.swap(r5, 0, r5.size() - 1);
+////		Collections.rotate(r5, 2);
+//		for (Integer integer : r5) {
+//			System.out.print(integer + " ");
+//		}
+//		System.out.println();
+//		//synchronizedList 把非线程安全的List转换为线程安全的List（未完成）
+		
+////		比较ArrayList和LinkedList的插入性能，在不同情况下，两者的性能不同
+//		//未完成，见cmd运行文件
+//		ArrayList<Integer> s51 = new ArrayList<>();
+//		LinkedList<Integer> s52 = new LinkedList<>();
+//		long t51 = System.currentTimeMillis();
+//		//循环会影响其他测试？？？？？
+//		for (int i = 0; i < 2000000; i++) {
+//			s51.add(1);
+//		}
+//		System.out.println("used " + (System.currentTimeMillis() - t51) + "ms");
+//		long t52 = System.currentTimeMillis();
+//		//会受到上面循环数量的影响？？？？？？
+//		for (int i = 0; i < 10000000; i++) {
+//			s52.addFirst(1);
+//		}
+//		System.out.println("used " + (System.currentTimeMillis() - t52) + "ms");
+		
+//		//HashMap中get和containKey的使用
+//		//要先判断是否存在key用containKey再用get，因为HashMap存在value为null
+//		HashMap<Integer, String> u5 = new HashMap<>();
+//		u5.put(1, null);
+//		if (u5.containsKey(1))
+//			System.out.println(u5.get(1));
+//		if (u5.containsKey(2))
+//			System.out.println(u5.get(2));
+		
+//		//反转HashMap
+//		HashMap<String,String> map = new HashMap<>();
+//        HashMap<String,String> temp = new HashMap<>();
+//        map.put("adc", "物理英雄");
+//        map.put("apc", "魔法英雄");
+//        map.put("t", "坦克");
+//        System.out.println("初始化后的Map:");
+//        System.out.println(map);
+//        Set<String> keys = map.keySet();
+//        for (String key : keys) {
+//            String value = map.get(key);
+//            temp.put(value, key);
+//        }
+//        //清除原map
+//        map.clear();
+//        //将临时map导入原map
+//        map.putAll(temp);
+//        System.out.println("反转后的Map:");
+//        System.out.println(map);
+        
+//        //比较三种set
+//        //把Math.PI中的数字，按照出现顺序打印出来，相同数字，只出现一次
+//        double v5 = Math.PI;
+//        Set<Integer> v51 = new HashSet<>();
+//        Set<Integer> v52 = new LinkedHashSet<>();
+//        Set<Integer> v53 = new TreeSet<>();
+//        for (int i = 0; i < 10;) {
+//        	Integer temp = (int)v5;
+//        	v5 = (v5 - temp) * 10;
+//        	System.out.println(v5);
+//        	if (v51.add(temp)) {
+//        		v52.add(temp);
+//        		v53.add(temp);
+//        		i++;
+//        	}
+//        }
+//        for (Integer e : v51) {
+//        	System.out.print(e + " ");
+//        }
+//        System.out.println();
+//        for (Integer e : v52) {
+//        	System.out.print(e + " ");
+//        }
+//        System.out.println();
+//        for (Integer e : v53) {
+//        	System.out.print(e + " ");
+//        }
+//        System.out.println();
+		
+//		//自定义字符串的hashcode
+//		String w5 = new Scanner(System.in).nextLine();
+//		myHashcode(w5);
+//		System.out.println(w5.hashCode());
+		
+//		//自定义HashMap并由此和ArrayList比较查找性能
+//		MyHashMap<Integer, LinkedList<Integer>> myHashMap = new MyHashMap<>();
+//		ArrayList<Integer> x5 = new ArrayList<>();
+//		for (int i = 0; i < 3000000; i++) {
+//			int temp = (int)(Math.random() * 3000000);
+//			x5.add(temp);
+//			LinkedList<Integer> list = myHashMap.get(temp);
+//			if (list == null) {
+//				list = new LinkedList<>();
+//				list.add(i);
+//				myHashMap.put(temp, list);
+//			}else {
+//				list.add(i);
+//			}
+//		}
+//		//随机拿十个数来测试查找性能，查找第一个查到的
+//		for (int i = 0; i < 10; i++) {
+//			int temp = (int)(Math.random() * 3000000);
+//			long start = System.currentTimeMillis();
+//			System.out.println(x5.indexOf(temp));
+//			System.out.println(System.currentTimeMillis() - start);
+//			start = System.currentTimeMillis();
+//			LinkedList<Integer> list = myHashMap.get(temp);
+//			System.out.println(list == null ? null : list.getFirst());
+//			System.out.println(System.currentTimeMillis() - start);
+//		}
+		
+		//两种比较定义
+		Hero[] y5 = new Hero[] {new ADHero("timo", 10),
+				new APHero("jialiao", 20),
+				new ADAPHero("xiaopao", 2)
+		};
+		ArrayList<Hero> z5 = new ArrayList<>();
+		z5.addAll(Arrays.asList(y5));
+//		//使用comperable
+//		System.out.print("未排序数组：");
+//		for (Hero h : y5) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+//		//可以排序
+//		Arrays.sort(y5);
+//		System.out.print("排序后数组：");
+//		for (Hero h : y5) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+//		z5.add(new ADHero("gailun", 1));
+//		System.out.print("未排序集合：");
+//		for (Hero h : z5) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+//		Collections.sort(z5);
+//		System.out.print("排序集合：");
+//		for (Hero h : z5) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+//		//使用比机器比较
+//		Collections.shuffle(z5);
+//		y5[0].setHp(100);
+//		Arrays.sort(y5, new HeroComparatorByHp());
+//		System.out.print("排序数组：");
+//		for (Hero h : y5) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+//		System.out.print("未排序集合：");
+//		for (Hero h : z5) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+//		Collections.sort(z5, new HeroComparatorByHp());
+//		System.out.print("排序集合：");
+//		for (Hero h : z5) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+		
+		//耦合操作
 		
 	}
 	
@@ -468,5 +722,14 @@ public class Test {
 			throw e;
 		}
 		
+	}
+	
+	private static void myHashcode(String s) {
+		int n = s.length();
+		int hc = 0;
+		for (int i = 0; i < n; i++) {
+			hc =+ hc * 31 + s.charAt(i);
+		}
+		System.out.println(hc);
 	}
 }

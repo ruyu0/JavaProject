@@ -5,6 +5,10 @@ public class ADAPHero extends Hero implements AD, AP{
 		super(heroName);
 	}
 	
+	public ADAPHero(String heroname,int herohp){ 
+        super(heroname, herohp);
+    }
+	
 	@Override
 	public void attack() {
 		// TODO Auto-generated method stub
