@@ -15,7 +15,8 @@ public abstract class Hero implements Serializable, Comparable<Hero>{
        
     int moveSpeed; //移动速度
     
-   
+
+
     
     //带一个参数的构造方法
     public Hero(String heroname){ 

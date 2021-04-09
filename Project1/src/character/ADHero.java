@@ -6,6 +6,7 @@ public class ADHero extends Hero implements AD{
 		System.out.println(name + "进行了物理攻击");
 	}
 
+
 	
 	public ADHero(String heroname) {
 		super(heroname);

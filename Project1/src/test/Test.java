@@ -34,6 +34,7 @@ import java.util.Locale;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeSet;
 
 import character.AD;
@@ -711,6 +712,47 @@ public class Test {
 		
 		//耦合操作
 		
+//		//专题六
+//		//上界通配符和泛型方法
+//		ArrayList<ADHero> c6 = new ArrayList<>();
+//		c6.add(new ADHero("gailun", 100));
+//		c6.add(new ADHero("ez", 10));
+//		for (Hero h : z5) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+//		for (Hero h : c6) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+//		//泛型方法的调用
+//		//支持泛型的类作为参数时，泛型使用受限通配符可以接受不同泛型类的参数
+//		Test.<Hero>a6(z5, c6);
+////		//或者
+////		a6(z5, c6);
+//		for (Hero h : z5) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+//		for (Hero h : c6) {
+//			System.out.print(h + "" +  h.getHp() + " ");
+//		}
+//		System.out.println();
+		
+//		//多重边界限定
+//		Test.<Integer>b6(new Integer(10));
+//		b6(new Integer(20));
+		
+		//Class<T>和Class<?>的区别
+		try {
+			//对比两者的返回类型
+			Date d6 = Date.class.newInstance();
+			d6 = (Date)Class.forName("java.util.Date").newInstance();
+			System.out.println(d6);
+		}catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 	
 	private static void openAFile(File f) throws IOException{
@@ -731,5 +773,18 @@ public class Test {
 			hc =+ hc * 31 + s.charAt(i);
 		}
 		System.out.println(hc);
+	}
+	
+	//泛型方法：泛型T受限，如果只是<T>则无法单独sort，参数使用了受限通配符
+	private static <T extends Hero> void a6(ArrayList<? extends T> a, ArrayList<? extends T> b) {
+		//变量a,b具有ArrayList<Hero>的所有属性和方法
+		Collections.shuffle(a);
+		Collections.sort(b);
+	}
+	
+	//类型参数可以进行多重边界限定，通配符？不行
+	private static <T extends Number & Comparable<T>> void b6(T t) {
+		//t同时具备Comparable和Number的属性
+		System.out.println(t.getClass());
 	}
 }
