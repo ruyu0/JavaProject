@@ -207,4 +207,40 @@ HashMap查找比List查找快，原因：每个非基本类型对象都要对应
 JDK8之后，引入了对集合的聚合操作，可以非常容易的遍历，筛选，比较集合中的元素。
 0:46 2021/4/4
 
-
+22:02 2021/4/8
+专题六 泛型
+https://www.cnblogs.com/minikobe/p/11547220.html
+https://www.cnblogs.com/EasonJim/p/7967096.html
+6.1 集合中的泛型
+6.1.1 不使用泛型带来的问题：造成繁琐的运行时类型转换异常
+6.1.2 使用泛型的优点：能够在编译时而不是运行时检测出的类型转换异常
+6.2 支持泛型的类
+6.3 通配符（通配符使声明支持泛型的类的变量可以接受不一定唯一种的泛型，可以免去由有继承关系的不同泛型类型引起的多个支持泛型的类变量的声明，用在方法参数中可以减少不必要的重载）
+6.3.1 ? extends （上界通配符）（见Test）
+ArrayList heroList<? extends Hero> 表示这是一个Hero泛型或者其子类泛型
+6.3.2 ? super （下界通配符）（超类限定）
+ArrayList heroList<? super Hero> 表示这是一个Hero泛型或者其父类泛型
+6.3.3 ？（非受限通配符）
+等价于<? extends Object>
+6.3.4 比较？和T的不同
+T 是一个 确定的 类型，通常用于泛型类和泛型方法的定义，？是一个 不确定 的类型，通常用于泛型方法的调用代码和形参，不能用于声明类和泛型方法。
+区别1：通过 T 来 确保 泛型参数的一致性
+// 通过 T 来 确保 泛型参数的一致性
+public <T extends Number> void test(List<T> dest, List<T> src)
+//通配符是 不确定的，所以这个方法不能保证两个 List 具有相同的元素类型
+public void test(List<? extends Number> dest, List<? extends Number> src)
+区别2：类型参数可以多重限定而通配符不行
+使用 & 符号设定多重边界（Multi Bounds)（见Test）
+区别3：通配符可以使用超类限定而类型参数不行
+类型参数 T 只具有 一种 类型限定方式：
+T extends A
+但是通配符 ? 可以进行 两种限定：
+? extends A
+? super A
+6.4 泛型方法(见Test）
+方法可以定义泛型类型
+[public|private|protected] [static] 泛型(可受限) 返回类型 方法名(参数）  
+6.5 泛型类型转换
+子类泛型对象不用转父类泛型声明，反之更不能：ArrayList<Hero> a = new ArrayList<ADHero>();错误的
+6.6 Class<T> 和Class<?>的区别
+最常见的是在反射场景下的使用（见Test）
