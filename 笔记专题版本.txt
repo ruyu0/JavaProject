@@ -244,3 +244,36 @@ T extends A
 子类泛型对象不用转父类泛型声明，反之更不能：ArrayList<Hero> a = new ArrayList<ADHero>();错误的
 6.6 Class<T> 和Class<?>的区别
 最常见的是在反射场景下的使用（见Test）
+
+8:31 2021/4/10
+专题七 Lambda
+7.1 匿名类方式（见Test）
+7.2 Lambda方式（见Test）：其实就是匿名方法
+java会还原成匿名类方式，引入Lambda表达式，会使得代码更加紧凑，而不是各种接口和匿名类到处飞。
+缺点：可读性差；不便于调试；版本支持jdk8
+7.3 Lambda方法引用
+7.3.1 引用静态方法（见Test）
+7.3.2 引用对象方法（见Test）
+7.3.3 引用容器中的对象方法， 引用Lambda的参数中的对象方法（见Test）
+7.3.4 引用构造器
+7.4 聚合操作 https://www.runoob.com/java/java8-streams.html		https://www.ktanx.com/blog/p/433
+和以前的Collection操作不同， Stream操作还有两个基础的特征：
+Pipelining: 中间操作都会返回流对象本身。 这样多个操作可以串联成一个管道， 如同流式风格（fluent style）。 这样做可以对操作进行优化， 比如延迟执行(laziness)和短路( short-circuiting)。
+内部迭代： 以前对集合遍历都是通过Iterator或者For-Each的方式, 显式的在集合外部进行迭代， 这叫做外部迭代。 Stream提供了内部迭代的方式， 通过访问者模式(Visitor)实现。
+7.4.1 Stream和管道的概念
+Stream 和Collection结构化的数据不一样，Stream是一系列的元素，来自数据源的元素队列。
+管道指的是一系列的聚合操作，分3个部分：
+7.4.2 管道源：流的来源。 可以是集合，数组，I/O channel， 产生器generator 等
+集合：xxx.stream() 并行流：xxx.parallelStream() 数组：Stream.of(xxx)或者Arrays.stream(xxx)
+7.4.3 中间操作intermediate operation： 
+每个中间操作，又会返回一个Stream，比如.filter()又返回一个Stream, 中间操作是“懒”操作，并不会真正进行遍历。
+主要分两类
+对元素进行筛选：filter 匹配	distinct 去除重复(根据equals判断)	sorted 自然排序	sorted(Comparator<T>) 指定排序	limit 保留	skip 忽略
+转换为其他形式的流:mapToDouble 转换为double的流		map 转换为任意类型的流
+7.4.4 结束操作terminal operation：
+当这个操作执行后，流就被使用“光”了，无法再被操作。所以这必定是流的最后一个操作。 
+结束操作不会返回Stream，但是会返回int、float、String、 Collection或者像forEach，什么都不返回, 结束操作才进行真正的遍历行为，在遍历的时候，才会去进行中间操作的相关判断
+结束操作才真正进行遍历行为，前面的中间操作也在这个时候，才真正的执行。
+forEach() 遍历每个元素	toArray() 转换为数组	min(Comparator<T>) 取最小的元素	max(Comparator<T>) 取最大的元素	count() 总数	findFirst() 第一个元素
+7.5 比较串行流，并行流的聚合操作和集合的查找性能（见程序Test）
+总结：又测试可知，在数据已经预先处理后直接读取结果是最快的，如MyHashMap；使用普通迭代比stream快一点，相差不大；而使用并行流的聚合操作是串行流的一半时间。

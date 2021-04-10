@@ -14,4 +14,5 @@ public class HeroComparatorByHp implements Comparator<Hero>{
 			return 0;
 		}
 	};
+
 }

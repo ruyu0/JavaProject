@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +37,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import character.AD;
 import character.ADAPHero;
@@ -53,13 +56,13 @@ import myStringBuffer.MyStringBuffer;
 import mytree.BTree;
 
 public class Test {
-	public static void main(String[] args){
+	public static void main(String[] args) {
 //		//二、数值默认值
 //		int a[] = new int[10];
 //		for (int i = 0; i < a.length; i++) {
 //			System.out.println(a[i]);
 //		}
-		
+
 //		//三、枚举
 //		//Season season = Season.valueOf("Sprin");//限制了值范围
 //		Season season = Season.valueOf("Spring");
@@ -68,8 +71,7 @@ public class Test {
 //		for (Season season2 : Season.values()) {
 //			System.out.println(season2);
 //		}
-		
-		
+
 //		//四、类型转换
 //		//子类转父类
 //		Hero b4 = new ADHero("寒冰");
@@ -83,14 +85,14 @@ public class Test {
 ////		ADAPHero g4 = (ADAPHero)f4;//无法转型
 //		ADHero h4 = (ADHero)f4;
 //		System.out.println(h4 == f4);
-		
+
 //		//七、多态
 //		Hero a7 = new ADHero("寒冰");
 //		Item b7 = new LifePotion();
 //		Item c7 = new MagicPotion();
 //		a7.useItem(b7);
 //		a7.useItem(c7);
-		
+
 //		//十二、内部类
 //		//非静态内部类、成员内部类
 //		Hero a12 = new ADHero("寒冰");
@@ -119,8 +121,7 @@ public class Test {
 //        h12.attack();
 //        //通过打印h，可以看到h这个对象属于test.Test$1这么一个系统自动分配的类名
 //        System.out.println(h12);
-		
-		
+
 //		//专题一
 //		//基本类型转封装类
 //		int b1 = 10;
@@ -219,7 +220,7 @@ public class Test {
 //		}
 //		end = System.currentTimeMillis();
 //		System.out.printf("MyStringBuffer reverse 10000000 次所用时间为 %d 毫秒 %n", (end - begin));
-		
+
 //		//专题二 日期和日历
 //		//日期转字符串 y代表年, M代表月份，d代表，H代表24小时制的时，h代表12小时制的时，m代表分，s代表秒，S代表毫秒
 //		SimpleDateFormat a2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -243,7 +244,7 @@ public class Test {
 //		System.out.println(c2.getTime());
 //		c2.set(Calendar.YEAR, 2015);
 //		System.out.println(c2.getTime());
-		
+
 //		//专题三 异常处理
 ////		//多异常分开catch
 ////		try {
@@ -276,7 +277,7 @@ public class Test {
 //			System.out.println(e.getMessage());
 //			e.printStackTrace();
 //		}
-		
+
 //		//专题四
 //		File a4 = new File("Directory1");
 //		File b4 = new File("Directory/b4.txt");
@@ -419,7 +420,7 @@ public class Test {
 //			// TODO: handle exception
 //			e.printStackTrace();
 //		}
-		
+
 //		//专题五
 //		//数组和ArrayList的互换
 //		ArrayList<Hero> a5 = new ArrayList<>();
@@ -449,7 +450,7 @@ public class Test {
 //		while(c5.hasNext()) {
 //			System.out.println(c5.next());
 //		}
-		
+
 //		BTree<Integer> e5 = new BTree<Integer>();
 //		Integer f5[] = new Integer[100];
 //		for (int i = 0; i < f5.length; i++) {
@@ -466,13 +467,13 @@ public class Test {
 //		e5.postOrderTraverse();
 //		//层序遍历
 //		e5.levelOrderTraverse();
-		
-		//比较使用HashMap查找的方法性能，找出数量和所在位置
-		//准备一个ArrayList其中存放3000000(三百万个)Integer对象，其名称是随机的,格式是[4位随机数]
+
+		// 比较使用HashMap查找的方法性能，找出数量和所在位置
+		// 准备一个ArrayList其中存放3000000(三百万个)Integer对象，其名称是随机的,格式是[4位随机数]
 		ArrayList<Integer> i5 = new ArrayList<>();
 		for (int i = 0; i < 3000000; i++) {
-			//eclipse输出有限制，没办法只能是6622，具体可以通过cmd测试
-			i5.add((int)(Math.random() * 6622));
+			// eclipse输出有限制，没办法只能是6622，具体可以通过cmd测试
+			i5.add((int) (Math.random() * 6622));
 		}
 //		//把值相同的数据所在的ArrayList的位置存在一个List中，这个List作为一个value，这个数据值作为一个key，存入HashMap中
 //		HashMap<Integer, List<Integer>> j5 = new HashMap<>();
@@ -509,7 +510,7 @@ public class Test {
 //		System.out.println(o5.size());
 //		n5 = System.currentTimeMillis();
 //		System.out.println("used " + (n5 - m5) + "ms");
-		
+
 //		//HashSet顺序不确定，不同jvm版本顺序不同
 //		Set<Integer> p5 = new HashSet<>();
 //		//从10 到 1插入
@@ -531,7 +532,7 @@ public class Test {
 //		System.out.println();
 //		System.out.println("total " + p5.size());
 //		System.out.println("used " + (System.currentTimeMillis() - q5) + "ms");
-		
+
 //		//Collections
 //		//不能用基本类型的数组转list，会识别成数组的list表
 //		List<Integer> r5 = Arrays.asList(7, 2, 3, 4, 6, 5, 8);
@@ -549,7 +550,7 @@ public class Test {
 //		}
 //		System.out.println();
 //		//synchronizedList 把非线程安全的List转换为线程安全的List（未完成）
-		
+
 ////		比较ArrayList和LinkedList的插入性能，在不同情况下，两者的性能不同
 //		//未完成，见cmd运行文件
 //		ArrayList<Integer> s51 = new ArrayList<>();
@@ -566,7 +567,7 @@ public class Test {
 //			s52.addFirst(1);
 //		}
 //		System.out.println("used " + (System.currentTimeMillis() - t52) + "ms");
-		
+
 //		//HashMap中get和containKey的使用
 //		//要先判断是否存在key用containKey再用get，因为HashMap存在value为null
 //		HashMap<Integer, String> u5 = new HashMap<>();
@@ -575,7 +576,7 @@ public class Test {
 //			System.out.println(u5.get(1));
 //		if (u5.containsKey(2))
 //			System.out.println(u5.get(2));
-		
+
 //		//反转HashMap
 //		HashMap<String,String> map = new HashMap<>();
 //        HashMap<String,String> temp = new HashMap<>();
@@ -595,7 +596,7 @@ public class Test {
 //        map.putAll(temp);
 //        System.out.println("反转后的Map:");
 //        System.out.println(map);
-        
+
 //        //比较三种set
 //        //把Math.PI中的数字，按照出现顺序打印出来，相同数字，只出现一次
 //        double v5 = Math.PI;
@@ -624,47 +625,44 @@ public class Test {
 //        	System.out.print(e + " ");
 //        }
 //        System.out.println();
-		
+
 //		//自定义字符串的hashcode
 //		String w5 = new Scanner(System.in).nextLine();
 //		myHashcode(w5);
 //		System.out.println(w5.hashCode());
-		
-//		//自定义HashMap并由此和ArrayList比较查找性能
-//		MyHashMap<Integer, LinkedList<Integer>> myHashMap = new MyHashMap<>();
-//		ArrayList<Integer> x5 = new ArrayList<>();
-//		for (int i = 0; i < 3000000; i++) {
-//			int temp = (int)(Math.random() * 3000000);
-//			x5.add(temp);
-//			LinkedList<Integer> list = myHashMap.get(temp);
-//			if (list == null) {
-//				list = new LinkedList<>();
-//				list.add(i);
-//				myHashMap.put(temp, list);
-//			}else {
-//				list.add(i);
-//			}
-//		}
+
+		//自定义HashMap并由此和ArrayList比较查找性能
+		MyHashMap<Integer, LinkedList<Integer>> myHashMap = new MyHashMap<>();
+		ArrayList<Integer> x5 = new ArrayList<>();
+		for (int i = 0; i < 3000000; i++) {
+			int temp = (int)(Math.random() * 30000);
+			x5.add(temp);
+			LinkedList<Integer> list = myHashMap.get(temp);
+			if (list == null) {
+				list = new LinkedList<>();
+				list.add(i);
+				myHashMap.put(temp, list);
+			}else {
+				list.add(i);
+			}
+		}
 //		//随机拿十个数来测试查找性能，查找第一个查到的
 //		for (int i = 0; i < 10; i++) {
-//			int temp = (int)(Math.random() * 3000000);
+//			int temp = (int)(Math.random() * 30000);
 //			long start = System.currentTimeMillis();
-//			System.out.println(x5.indexOf(temp));
-//			System.out.println(System.currentTimeMillis() - start);
+//			System.out.print(x5.indexOf(temp));
+//			System.out.println("使用indexOf耗时" + (System.currentTimeMillis() - start) + "毫秒");
 //			start = System.currentTimeMillis();
 //			LinkedList<Integer> list = myHashMap.get(temp);
-//			System.out.println(list == null ? null : list.getFirst());
-//			System.out.println(System.currentTimeMillis() - start);
+//			System.out.print(list == null ? null : list.getFirst());
+//			System.out.println("使用MyHashMap耗时" + (System.currentTimeMillis() - start) + "毫秒");
 //		}
-		
-		//两种比较定义
-		Hero[] y5 = new Hero[] {new ADHero("timo", 10),
-				new APHero("jialiao", 20),
-				new ADAPHero("xiaopao", 2)
-		};
+
+		// 两种比较定义
+		Hero[] y5 = new Hero[] { new ADHero("timo", 10), new APHero("jialiao", 20), new ADAPHero("xiaopao", 2) };
 		ArrayList<Hero> z5 = new ArrayList<>();
 		z5.addAll(Arrays.asList(y5));
-//		//使用comperable
+//		//使用comparable
 //		System.out.print("未排序数组：");
 //		for (Hero h : y5) {
 //			System.out.print(h + "" +  h.getHp() + " ");
@@ -709,9 +707,9 @@ public class Test {
 //			System.out.print(h + "" +  h.getHp() + " ");
 //		}
 //		System.out.println();
-		
-		//耦合操作
-		
+
+		// 耦合操作
+
 //		//专题六
 //		//上界通配符和泛型方法
 //		ArrayList<ADHero> c6 = new ArrayList<>();
@@ -738,53 +736,169 @@ public class Test {
 //			System.out.print(h + "" +  h.getHp() + " ");
 //		}
 //		System.out.println();
-		
+
 //		//多重边界限定
 //		Test.<Integer>b6(new Integer(10));
 //		b6(new Integer(20));
-		
-		//Class<T>和Class<?>的区别
-		try {
-			//对比两者的返回类型
-			Date d6 = Date.class.newInstance();
-			d6 = (Date)Class.forName("java.util.Date").newInstance();
-			System.out.println(d6);
-		}catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-			// TODO: handle exception
-			e.printStackTrace();
+
+//		//Class<T>和Class<?>的区别
+//		try {
+//			//对比两者的返回类型
+//			Date d6 = Date.class.newInstance();
+//			d6 = (Date)Class.forName("java.util.Date").newInstance();
+//			System.out.println(d6);
+//		}catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
+
+		//专题七
+		for (Hero h : z5) {
+			System.out.print(h + "" + h.getHp() + " ");
+		}
+		System.out.println();
+//		//匿名类方式
+//		//注意泛型的使用Comparator<Object>也可以
+//		Comparator<? super Hero> a7 = new Comparator<Hero>() {
+//			@Override
+//			public int compare(Hero o1, Hero o2) {
+//				// TODO Auto-generated method stub
+//				return 0;
+//			}
+//		};
+//		Collections.sort(z5, a7);
+//		// Lambda方式，对比匿名类方式，作用相同的，只有一个参数时可以不用括号，只有1条语句可以不加{}
+//		Collections.sort(z5, (o1, o2) -> {
+//			if (o1.getHp() > o2.getHp())
+//				return 1;
+//			if (o2.getHp() > o1.getHp())
+//				return -1;
+//			else {
+//				return 0;
+//			}
+//		});
+//		//引用静态方法，参数对应
+//		//lambda表达
+////		Collections.sort(z5, (o1, o2) -> b7(o1, o2));
+//		//方式
+//		Collections.sort(z5, Test::b7);
+//		//对比参数为Object和Hero，也可以编译运行
+//		Collections.sort(z5, Test::b71);
+//		//引用对象方法
+//		//lambda表达
+////		Collections.sort(z5, (o1, o2) -> new Test().c7(o1, o2));
+//		//引用对象方法的方式
+//		Collections.sort(z5, new Test()::c7);
+//		//引用Lambda的参数中的对象方法
+//		//注意compareTo的参数只有一个，只需要处理其他剩余参数
+//		//lambda表达
+////		Collections.sort(z5, (o1, o2) -> o1.compareTo(o2));
+//		//引用Lambda的参数中的对象的方式
+//		Collections.sort(z5, Hero::compareTo);
+		for (Hero h : z5) {
+			System.out.print(h + "" + h.getHp() + " ");
+		}
+		System.out.println();
+//		//引用构造器
+//		//lambda表达
+//		System.out.println(d7(() -> new Integer(1)));
+//		//引用构造器方式
+//		//参数必须一致，所以此时调用的时默认构造器
+//		System.out.println(d7(Date::new));
+//		//聚合操作
+//		//集合框架
+//		z5.stream()
+//		.filter(h -> h.getHp() >= 10)
+//		.forEach(h -> System.out.print(h + "" + h.getHp() + " "));
+//		System.out.println();
+//		//数组
+////		Arrays.stream(y5)
+//		Stream.of(y5)
+//		.filter(h -> h.getHp() >= 10)
+//		.forEach(h -> System.out.print(h + "" + h.getHp() + " "));
+//		System.out.println();
+		//比较串行流，并行流的聚合操作和集合的查找性能
+		for (int i = 0; i < 100; i++) {
+			int test = (int)(Math.random() * 30000);
+			long start = System.currentTimeMillis();
+			long number = x5.stream().filter(h -> h == test).count();
+			System.out.println("使用stream测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+			start = System.currentTimeMillis();
+			number = x5.parallelStream().filter(h -> h == test).count();
+			System.out.println("使用parallelStream测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+			start = System.currentTimeMillis();
+			List<Integer> list = myHashMap.get(test);
+			number = list == null ? 0 : list.size();
+			System.out.println("使用MyHashMap测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+			start = System.currentTimeMillis();
+			number = 0;
+			for (int e : x5) {
+				if (e == test) number++;
+				
+			}
+			System.out.println("使用迭代遍历测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+			System.out.println();
 		}
 	}
-	
-	private static void openAFile(File f) throws IOException{
+
+	private static void openAFile(File f) throws IOException {
 		try {
 			InputStream inputStream = new FileInputStream(f);
-			
+
 		} catch (IOException e) {
 			// TODO: handle exception
 			throw e;
 		}
-		
+
 	}
-	
+
 	private static void myHashcode(String s) {
 		int n = s.length();
 		int hc = 0;
 		for (int i = 0; i < n; i++) {
-			hc =+ hc * 31 + s.charAt(i);
+			hc = +hc * 31 + s.charAt(i);
 		}
 		System.out.println(hc);
 	}
-	
-	//泛型方法：泛型T受限，如果只是<T>则无法单独sort，参数使用了受限通配符
+
+	// 泛型方法：泛型T受限，如果只是<T>则无法单独sort，参数使用了受限通配符
 	private static <T extends Hero> void a6(ArrayList<? extends T> a, ArrayList<? extends T> b) {
-		//变量a,b具有ArrayList<Hero>的所有属性和方法
+		// 变量a,b具有ArrayList<Hero>的所有属性和方法
 		Collections.shuffle(a);
 		Collections.sort(b);
 	}
-	
-	//类型参数可以进行多重边界限定，通配符？不行
+
+	// 类型参数可以进行多重边界限定，通配符？不行
 	private static <T extends Number & Comparable<T>> void b6(T t) {
-		//t同时具备Comparable和Number的属性
+		// t同时具备Comparable和Number的属性
 		System.out.println(t.getClass());
+	}
+	
+	private static int b7(Hero o1, Hero o2) {
+		if (o1.getHp() > o2.getHp())
+			return 1;
+		if (o2.getHp() > o1.getHp())
+			return -1;
+		else {
+			return 0;
+		}
+	}
+	
+	private static int b71(Object o1, Hero o2) {
+		return 0;
+	}
+	
+	private int c7(Hero o1, Hero o2) {
+		if (o1.getHp() > o2.getHp())
+			return 1;
+		if (o2.getHp() > o1.getHp())
+			return -1;
+		else {
+			return 0;
+		}
+	}
+	
+	private static <T> T d7(Supplier<T> s) {
+		return s.get();
 	}
 }
