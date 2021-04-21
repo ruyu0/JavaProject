@@ -28,3 +28,8 @@ hashcode不等，两个对象一定不等
 
 4.java.util.Arrays$ArrayList和java.util.ArrayList
 https://segmentfault.com/a/1190000014170298
+
+5.你可以使用JDK自带的监控工具来监控我们创建的线程数量，运行一个不终止的线程，创建指定量的线程，来观察：
+工具目录：C:\Program Files\Java\jdk1.6.0_06\bin\jconsole.exe
+
+6.Thread相关方法：currentTread(), sleep()

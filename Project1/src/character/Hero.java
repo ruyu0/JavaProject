@@ -9,11 +9,15 @@ public abstract class Hero implements Serializable, Comparable<Hero>{
     private static final long serialVersionUID = 1L;
 	protected String name; //姓名
     
-    int hp = 0; //血量
+    int hp = 100; //血量
        
-    float armor; //护甲
+    int armor; //护甲
        
     int moveSpeed; //移动速度
+    
+    int aggressivity;
+    
+    int attackSpeed;
     
 
 
@@ -28,6 +32,26 @@ public abstract class Hero implements Serializable, Comparable<Hero>{
         name = heroname;
         hp = herohp;
     }
+    
+    public Hero(String name, int armor, int aggressivity, int attackSpeed) {
+		// TODO Auto-generated constructor stub
+    	this.name = name;
+    	this.armor = armor;
+    	this.aggressivity = aggressivity;
+    	this.attackSpeed = attackSpeed;
+	}
+    
+    public int getAggressivity() {
+		return aggressivity;
+	}
+    
+    public int getAttackSpeed() {
+		return attackSpeed;
+	}
+    
+    public int getArmor() {
+		return armor;
+	}
     
     public int getHp() {
 		return hp;
@@ -108,5 +132,20 @@ public abstract class Hero implements Serializable, Comparable<Hero>{
     public void getKill() {
     	System.out.println("击杀人数：" + new BattleScore().kill);
     }
+    
+    //测试同步
+//    public void recover() {
+    public synchronized void recover() {
+    	setHp(getHp() + 1);
+    }
+    
+    public synchronized void recover(int i) {
+		setHp(getHp() + i);
+	}
+    
+    public synchronized void reduce() {
+    	setHp(getHp() - 1);
+	}
+   
 }
 

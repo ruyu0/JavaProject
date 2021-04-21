@@ -168,7 +168,7 @@ shuffle 混淆List中数据的顺序
 sort 对List中的数据进行排序
 swap 交换两个数据的位置
 rotate 把List中的数据，向右滚动指定单位的长度
-synchronizedList 把非线程安全的List转换为线程安全的List（未完成）
+synchronizedList 把非线程安全的List转换为线程安全的List（见Test专题八8.4）
 5.3.1 比较ArrayList和HashSet
 ArrayList: 有顺序，HashSet: 无顺序
 List中的数据可以重复，Set中的数据不能够重复
@@ -276,4 +276,189 @@ Stream 和Collection结构化的数据不一样，Stream是一系列的元素，
 结束操作才真正进行遍历行为，前面的中间操作也在这个时候，才真正的执行。
 forEach() 遍历每个元素	toArray() 转换为数组	min(Comparator<T>) 取最小的元素	max(Comparator<T>) 取最大的元素	count() 总数	findFirst() 第一个元素
 7.5 比较串行流，并行流的聚合操作和集合的查找性能（见程序Test）
-总结：又测试可知，在数据已经预先处理后直接读取结果是最快的，如MyHashMap；使用普通迭代比stream快一点，相差不大；而使用并行流的聚合操作是串行流的一半时间。
+总结：测试可知，在数据已经预先处理后直接读取结果是最快的，如MyHashMap；使用普通迭代比stream快一点，相差不大；而使用并行流的聚合操作是串行流的一半时间。
+
+10:59 2021/4/11
+专题八 多线程
+8.1 概念和基本方式
+多线程就是同一时间执行多个任务，进程是一个程序的启动运行，线程是进程内部同时进行的任务
+8.1.1 继承线程类Thread
+自定义多线程类继承Thread，重写run方法，使用时实例化该类，执行start方法
+8.1.2 实现Runnable接口
+自定义多线程类实现Runnable接口，重写run方法，使用时，创建该类对象，并由该对象实例化一个Thread，再执行start方法
+8.1.3 匿名类（见Test）
+使用匿名类，继承Thread,重写run方法，直接在run方法中写业务代码
+匿名类的一个好处是可以很方便的访问外部的局部变量。
+前提是外部的局部变量需要被声明为final。(JDK7以后就不需要了)，但这个变量不能在外面进行赋值，否则无法识别成final变量
+8.1.4 使用多线程进行查找（见Test）
+等待所有线程结束的方法 https://blog.csdn.net/liweisnake/article/details/12966761
+8.2 常见的线程方法
+sleep:当前所在的线程暂停，因为当前线程sleep的时候，有可能被停止，会抛出InterruptedException
+join:加入到当前线程中。主线程：所有进程，至少会有一个线程即主线程，即main方法开始执行。必须先start才能join（见Test)
+setPriority：线程优先级，当线程处于竞争关系的时候，优先级高的线程会有更大的几率获得CPU资源。（见Test）在资源十分充足时无法看到效果
+yield:当前线程，临时暂停，使得其他线程可以有更多的机会占用CPU资源，由运行态到就绪态，停止一下后再由就绪态到运行态。（暂时不知到效果）
+setDaemon:守护线程的概念是： 当一个进程里，所有的线程都是守护线程的时候，结束当前进程。守护线程通常会被用来做日志，性能统计等工作。(见Test）
+守护线程最典型的应用就是 GC (垃圾回收器)
+ (1) start()之前设置，否则会IllegalThreadStateException。不能把正在运行的常规线程设置为守护线程。
+(2) 在Daemon线程中产生的新线程也是Daemon的。
+ (3) 不要认为所有的应用都可以分配给Daemon来进行服务，比如读写操作或者计算逻辑。 因为你不可能知道在所有的User完成之前，Daemon是否已经完成了预期的服务任务。
+17:42 2021/4/12
+8.3 多线程 同步问题concurrency
+多个线程同时修改一个数据的时候，可能导致的问题
+8.3.1 同步问题演示（见Test）
+8.3.2 分析原因：在一个线程真正进行访问修改某对象中的成员数据的同时，另一线程也在做类似操作，最后的结果是最后修改的值而不是两个线程的综合修改的值，这个值在业务上叫脏数据。
+8.3.3 解決思路：在增加线程访问hp期间，其他线程不可以访问hp
+8.3.4 解決辦法
+用法一：
+synchronized (someObject){
+  //此处的代码只有占有了someObject后才可以执行
+}
+synchronized關鍵字的意義：表示【當前】綫程（关键字所在的线程）獨占該對象(見Test），并不是执行代码里面启动的线程。
+释放同步对象的方式： synchronized 块自然结束，或者有异常抛出
+用法二：
+synchronized (this) {
+}
+表示当前对象为同步对象
+在实例方法前，直接加上synchronized ，其所对应的同步对象，就是this（见Test）
+用法三：
+在类方法前加上synchronized， 同步对象是Class实例
+https://www.jb51.net/article/74566.htm （主要是第四大点）
+
+难点：https://www.cnblogs.com/onlywujun/articles/3530984.html
+8.4 线程安全类
+如果一个类，其方法都是有synchronized修饰的，那么该类就叫做线程安全的类
+同一时间，只有一个线程能够进入 这种类的一个实例 的去修改数据，进而保证了这个实例中的数据的安全(不会同时被多线程修改而变成脏数据)
+对线程安全类和非线程安全类进行多线程操作时，后者回快（发生大量同步时以及有延时才能看出来，几乎没区别，而且后者产生的是脏数据）（见Test）
+8.4.1 HashMap和HashTable 区别见（5.3.3 ）
+8.4.2 （见Test）StringBuffer和StringBuilder的区别，StringBuffer的方法都是有synchronized修饰的，StringBuffer就叫做线程安全的类，而StringBuilder就不是线程安全的类
+8.4.3 Vector和ArrayList一模一样的~他们的区别也在于，Vector是线程安全的类，而ArrayList是非线程安全的。
+8.4.4 借助Collections.synchronizedList，可以把ArrayList转换为线程安全的List。与此类似的，还有HashSet,LinkedList,HashMap等等非线程安全的类，都通过工具类Collections转换为线程安全的（见Test）
+线程安全化后不可再对之前的对象进行操作，否则一样不安全，因为两者底层还是同一个集合
+8.5 死锁演示（见Test）
+8.6 线程之间的交互
+线程之间有交互通知的需求。
+例如：加血，减血两个线程处理同一个英雄。减血的线程发现血量=1，就停止减血，直到加血的线程为英雄加了血，才可以继续减血。
+8.6.1 不好的解决方式：减血线程中使用while循环判断是否是1，是就不停循环等加血，不是就跳出循环
+会大量占用CPU,拖慢性能
+8.6.2 使用wait和notify进行线程交互（見Test）
+并不是Thread线程上的方法，它们是Object上的方法。
+调用wait是有前提条件的，一定是在synchronized块里，否则就会出错。
+this.wait()表示 让占有this的线程等待，并临时释放占有
+this.notify() 表示通知那些等待在this的线程，可以苏醒过来了。
+notifyAll() 的意思是，通知所有的等待在这个同步对象上的线程，可以苏醒过来了，有机会重新占用当前对象了。
+8.6.3 生产者消费者问题（見Test）如何實現生產少時加快生產，生產多少減慢生產？？？？
+1. 使用栈来存放数据
+1.1 把栈改造为支持线程安全
+1.2 把栈的边界操作进行处理，当栈里的数据是0的时候，访问pull的线程就会等待。 当栈里的数据是20的时候，访问push的线程就会等待
+2. 提供一个生产者（Producer）线程类，生产随机大写字符压入到堆栈
+3. 提供一个消费者（Consumer）线程类，从堆栈中弹出字符并打印到控制台
+4. 提供一个测试类，使两个生产者和三个消费者线程同时运行
+8.6.4 終止綫程的三種方法 https://blog.csdn.net/anhuidelinger/article/details/11746365
+8.6.5 Lock对象使用await和signal
+8.7 綫程池
+每一个线程的启动和结束都是比较消耗时间和占用资源的。如果在系统中用到了很多的线程，大量的启动和结束动作会导致系统的性能变卡，响应变慢。
+为了解决这个问题，引入线程池这种设计思想。
+8.7.1 綫程池的設計思路（见TEst）
+线程池的思路和生产者消费者模型是很接近的。
+1. 准备一个任务容器
+2. 一次性启动10个 消费者线程
+3. 刚开始任务容器是空的，所以线程都wait在上面。
+4. 直到一个外部线程往这个任务容器中扔了一个“任务”，就会有一个消费者线程被唤醒notify
+5. 这个消费者线程取出“任务”，并且执行这个任务，执行完毕后，继续等待下一次任务的到来。
+6. 如果短时间内，有较多的任务加入，那么就会有多个线程被唤醒，去执行这些任务。
+在整个过程中，都不需要创建新的线程，而是循环使用这些已经存在的线程
+8.7.2 自定義綫程池（见Test）
+8.7.3 测试自定义线程池（见Test）
+创造一个情景，每个任务执行的时间都是1秒，刚开始是间隔1秒钟向线程池中添加任务，然后间隔时间越来越短，执行任务的线程还没有来得及结束，新的任务又来了。
+就会观察到线程池里的其他线程被唤醒来执行这些任务
+8.7.4 java本身的线程池
+线程池类ThreadPoolExecutor在包java.util.concurrent下
+ThreadPoolExecutor threadPool= new ThreadPoolExecutor(10, 15, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+第一个参数10 表示这个线程池初始化了10个线程在里面工作
+第二个参数15 表示如果10个线程不够用了，就会自动增加到最多15个线程
+第三个参数60 结合第四个参数TimeUnit.SECONDS，表示经过60秒，多出来的线程还没有接到活儿，就会回收，最后保持池子里就10个
+第四个参数TimeUnit.SECONDS 如上
+第五个参数 new LinkedBlockingQueue() 用来放任务的集合
+execute方法用于添加新的任务
+使用线程池工具类Executors
+newCachedThreadPool创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。
+newFixedThreadPool 创建一个定长线程池，可控制线程最大并发数，超出的线程会在队列中等待。
+newScheduledThreadPool 创建一个定长线程池，支持定时及周期性任务执行。
+newSingleThreadExecutor 创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序(FIFO, LIFO, 优先级)执行。
+8.7.5测试使用线程池来查找的性能（见Test）
+8.8 Lock对象
+与 synchronized (someObject) 类似的，lock()方法，表示当前线程占用lock对象，一旦占用，其他线程就不能占用了。
+与 synchronized 不同的是，一旦synchronized 块结束，就会自动释放对someObject的占用。 lock却必须调用unlock方法进行手动释放，为了保证释放的执行，往往会把unlock() 放在finally中进行。
+8.8.1 使用Lock对象实现同步效果（见Test）
+在try中使用，finally释放（各个方法的一般形式https://www.cnblogs.com/myseries/p/10784076.html）
+// 获取锁 ，获取成功则占有锁，否则等待
+void lock() 
+  
+（见Test）
+// 如果当前线程未被中断，则获取锁，可以响应中断  
+void lockInterruptibly()   
+lockInterruptibly()方法比较特殊，当通过这个方法去获取锁时，如果线程 正在等待获取锁，则这个线程能够 响应中断，即中断线程的等待状态。
+例如，当两个线程同时通过lock.lockInterruptibly()想获取某个锁时，假若此时线程A获取到了锁，而线程B只有在等待，那么对线程B调用threadB.interrupt()方法能够中断线程B的等待过程。
+lockInterruptibly()一般的使用形式如下：
+public void method() throws InterruptedException {
+    lock.lockInterruptibly();
+    try {  
+     //.....
+    }
+    finally {
+        lock.unlock();
+    }  
+}
+注意：当一个线程获取了锁之后，是不会被interrupt()方法中断的。
+因为interrupt()方法只能中断阻塞过程中的线程而不能中断正在运行过程中的线程。
+因此，当通过lockInterruptibly()方法获取某个锁时，如果不能获取到，那么只有进行等待的情况下，才可以响应中断的。
+与 synchronized 相比，当一个线程处于等待某个锁的状态，是无法被中断的，只有一直等待下去。
+
+// 返回绑定到此 Lock 实例的新 Condition 实例 ，线程间通信与协作
+Condition newCondition()   
+
+// 仅在调用时锁为空闲状态才获取该锁，获取成功返回true并占用（需要解锁），否则返回false不会等待，可以响应中断  
+boolean tryLock()   
+// 如果锁在给定的等待时间内空闲，并且当前线程未被中断，则获取锁  
+boolean tryLock(long time, TimeUnit unit)   
+// 释放锁  最好时finally
+void unlock()
+8.8.2 Lock的线程交互（见Test）
+使用synchronized方式进行线程交互，用到的是同步对象的wait,notify和notifyAll方法
+Lock也提供了类似的解决办法，首先通过lock对象得到一个Condition对象，然后分别调用这个Condition对象的：await, signal,signalAll 方法
+8.8.3 Lock和synchronized的对比
+1. Lock是一个接口，而synchronized是Java中的关键字，synchronized是内置的语言实现，Lock是代码层面的实现。
+2. Lock可以选择性的获取锁，如果一段时间获取不到，可以放弃。synchronized不行，会一根筋一直获取下去。 借助Lock的这个特性，就能够规避死锁，synchronized必须通过谨慎和良好的设计，才能减少死锁的发生。
+3. synchronized在发生异常和同步块结束的时候，会自动释放锁。而Lock必须手动释放， 所以如果忘记了释放锁，一样会造成死锁。
+4.在资源竞争不是很激烈的情况下，Synchronized的性能要优于ReetrantLock，但是在资源竞争很激烈的情况下，Synchronized的性能会下降几十倍，但是ReetrantLock的性能能维持常态。
+8.8.4 借助tryLock的有限等待时间，解决死锁问题
+8.8.5 Lock的实现类ReentrantLock
+可重入锁。ReentrantLock是唯一实现了Lock接口的类，并且ReentrantLock提供了更多的方法。
+构造方法（不带参数 和带参数  true： 公平锁； false: 非公平锁）
+8.8.6 ReadWriteLock
+该接口只有两个方法：Lock readLock()//用于读取操作的锁	Lock writeLock()//返回用于写入操作的锁
+维护了一对相关的锁，一个用于只读操作，另一个用于写入操作。只要没有 writer，读取锁可以由多个 reader 线程同时保持，而写入锁是独占的。
+实现读时可并发，写时互斥 等操作
+8.8.7 锁的基本概念
+可重入锁：已申请锁的线程不需要重新申请锁，synchronized和ReentrantLock都是可重入锁
+可中断锁：可以响应中断的锁，synchronized是不可中断的锁，ReentrantLock是可中断锁
+公平锁： 尽量 以请求锁的顺序来获取锁，同是有多个线程在等待一个锁，当这个锁被释放时，等待时间最久的线程（最先请求的线程）会获得该锁。synchronized是非公平锁，ReentrantLock和ReentrantReadWriteLock默认是公平锁，可设置
+8.9 原子访问
+原子性操作概念：所谓的原子性操作即不可中断的操作，比如赋值操作。本身是线程安全的
+i++是由3个原子性操作组成，不是线程安全的
+原子类，jdk6，包java.util.concurrent.atomic，对应基本类型，自增incrementAndGet自减等方法都是原子性的
+出现线程安全性问题的条件1）多线程环境2）有共享资源3）对共享资源的非原子性操作
+8.9 线程状态总结
+8.9.1 中断（各种情况）
+Unless the current thread is interrupting itself, which is always permitted, the checkAccess method of this thread is invoked, which may cause a SecurityException to be thrown.
+If this thread is blocked in an invocation of the wait(), wait(long), or wait(long, int) methods of the Object class, or of the join(), join(long), join(long, int), sleep(long), or sleep(long, int), methods of this class, then its interrupt status will be cleared and it will receive an InterruptedException.
+If this thread is blocked in an I/O operation upon an InterruptibleChannel then the channel will be closed, the thread's interrupt status will be set, and the thread will receive a ClosedByInterruptException.
+If this thread is blocked in a Selector then the thread's interrupt status will be set and it will return immediately from the selection operation, possibly with a non-zero value, just as if the selector's wakeup method were invoked.
+If none of the previous conditions hold then this thread's interrupt status will be set.
+Interrupting a thread that is not alive need not have any effect.
+8.9.2 等待操作比较
+https://gourderwa.blog.csdn.net/article/details/103701793
+8.9.3 状态
+https://blog.csdn.net/qq_22771739/article/details/82529874
+https://www.runoob.com/java/thread-status.html（后面有测试程序）
+
