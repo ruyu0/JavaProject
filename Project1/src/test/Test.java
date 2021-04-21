@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -37,9 +38,25 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
+import java.util.Vector;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import javax.net.ssl.SSLEngineResult.Status;
+
+import org.omg.CORBA.TIMEOUT;
+
+import battle.Attack;
 import character.AD;
 import character.ADAPHero;
 import character.ADHero;
@@ -54,6 +71,11 @@ import myException.EnemyHeroIsDeadException;
 import myHashMap.MyHashMap;
 import myStringBuffer.MyStringBuffer;
 import mytree.BTree;
+import produce_consumer.Consumer;
+import produce_consumer.ConsumerPool;
+import produce_consumer.MyBlockingStack;
+import produce_consumer.MyThreadPool;
+import produce_consumer.Producer;
 
 public class Test {
 	public static void main(String[] args) {
@@ -122,7 +144,7 @@ public class Test {
 //        //通过打印h，可以看到h这个对象属于test.Test$1这么一个系统自动分配的类名
 //        System.out.println(h12);
 
-//		//专题一
+//		//TODO:专题一
 //		//基本类型转封装类
 //		int b1 = 10;
 //		Integer a1 = new Integer(b1);
@@ -221,7 +243,7 @@ public class Test {
 //		end = System.currentTimeMillis();
 //		System.out.printf("MyStringBuffer reverse 10000000 次所用时间为 %d 毫秒 %n", (end - begin));
 
-//		//专题二 日期和日历
+//		//TODO:专题二 日期和日历
 //		//日期转字符串 y代表年, M代表月份，d代表，H代表24小时制的时，h代表12小时制的时，m代表分，s代表秒，S代表毫秒
 //		SimpleDateFormat a2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 //		Date b2 = new Date();
@@ -231,7 +253,6 @@ public class Test {
 //			b2 = a2.parse("2012-10-32 17:59:22.352");//变成11月1日！！！
 //			System.out.println(b2);
 //		} catch (Exception e) {
-//			// TODO: handle exception
 //			System.out.println("Error");
 //		}
 //		//Calendar与Date的互相转换
@@ -245,26 +266,22 @@ public class Test {
 //		c2.set(Calendar.YEAR, 2015);
 //		System.out.println(c2.getTime());
 
-//		//专题三 异常处理
+//		//TODO:专题三 异常处理
 ////		//多异常分开catch
 ////		try {
 ////			InputStream a3 = new FileInputStream(new File("abc"));
 ////		} catch (IOException e) {
-////			// TODO: handle exception
 ////		}catch (ClassCastException e) {
-////			// TODO: handle exception
 ////		}
 //		//多异常一起catch
 //		try {
 //			InputStream a3 = new FileInputStream(new File("abc"));
 //		} catch (IOException | ClassCastException e) {
-//			// TODO: handle exception
 //		}
 //		//throw 和 throws
 //		try {
 //			openAFile(new File("abc"));
 //		}catch (IOException e) {
-//			// TODO: handle exception
 //			System.out.println("Error");
 //		}
 //		//自定义异常类
@@ -273,12 +290,11 @@ public class Test {
 //		try {
 //		b3.attack(c3);
 //		}catch (EnemyHeroIsDeadException e) {
-//			// TODO: handle exception
 //			System.out.println(e.getMessage());
 //			e.printStackTrace();
 //		}
 
-//		//专题四
+//		//TODO:专题四
 //		File a4 = new File("Directory1");
 //		File b4 = new File("Directory/b4.txt");
 //		//创建a4,用mkdirs创建父文件，不用mkdir
@@ -288,7 +304,6 @@ public class Test {
 ////			//在jvm结束删除文件
 ////			b4.deleteOnExit();
 //		} catch (IOException e) {
-//			// TODO: handle exception
 //			e.printStackTrace();
 //		}
 //		//最后修改时间
@@ -312,7 +327,6 @@ public class Test {
 //			System.out.println(new String(d4));
 //			System.out.println(new String(d4, Charset.forName("utf-8")));
 //		}catch (IOException e) {
-//			// TODO: handle exception
 //			e.printStackTrace();
 //		}
 //		//字符流的读取和写入
@@ -328,7 +342,6 @@ public class Test {
 //			System.out.println(h4);
 //			f4.close();
 //		}catch (IOException e) {
-//			// TODO: handle exception
 //			e.printStackTrace();
 //		}
 //		//字符流正确读写中文
@@ -342,14 +355,12 @@ public class Test {
 //			j4.write("写入一行数据\n");
 //			
 //		} catch (IOException e) {
-//			// TODO: handle exception
 //			e.printStackTrace();
 //		}finally {
 //			if (j4 != null) {
 //				try {
 //					j4.close();
 //				} catch (IOException e2) {
-//					// TODO: handle exception
 //					e2.printStackTrace();
 //				}
 //			}
@@ -362,14 +373,12 @@ public class Test {
 //			i4.read(k4);
 //			System.out.println(new String(k4));
 //		}catch (IOException e) {
-//			// TODO: handle exception
 //			e.printStackTrace();
 //		}finally {
 //			if (null != i4) {
 //				try {
 //					i4.close();
 //				} catch (IOException e2) {
-//					// TODO: handle exception
 //					e2.printStackTrace();
 //				}
 //			}
@@ -394,7 +403,6 @@ public class Test {
 //			
 //			System.out.println(n4);
 //		}catch (IOException e) {
-//			// TODO: handle exception
 //			e.printStackTrace();
 //		}
 //		//对象流
@@ -417,11 +425,10 @@ public class Test {
 //				r4 = (Hero)p4.readObject();
 //			}
 //		}catch (IOException | ClassNotFoundException e) {
-//			// TODO: handle exception
 //			e.printStackTrace();
 //		}
 
-//		//专题五
+//		//TODO:专题五
 //		//数组和ArrayList的互换
 //		ArrayList<Hero> a5 = new ArrayList<>();
 //		a5.add(new ADHero("ez"));
@@ -631,18 +638,18 @@ public class Test {
 //		myHashcode(w5);
 //		System.out.println(w5.hashCode());
 
-		//自定义HashMap并由此和ArrayList比较查找性能
+		// TODO:自定义HashMap(myHashMap)并由此和ArrayList(x5)比较查找性能
 		MyHashMap<Integer, LinkedList<Integer>> myHashMap = new MyHashMap<>();
 		ArrayList<Integer> x5 = new ArrayList<>();
 		for (int i = 0; i < 3000000; i++) {
-			int temp = (int)(Math.random() * 30000);
+			int temp = (int) (Math.random() * 30000);
 			x5.add(temp);
 			LinkedList<Integer> list = myHashMap.get(temp);
 			if (list == null) {
 				list = new LinkedList<>();
 				list.add(i);
 				myHashMap.put(temp, list);
-			}else {
+			} else {
 				list.add(i);
 			}
 		}
@@ -658,10 +665,10 @@ public class Test {
 //			System.out.println("使用MyHashMap耗时" + (System.currentTimeMillis() - start) + "毫秒");
 //		}
 
-		// 两种比较定义
-		Hero[] y5 = new Hero[] { new ADHero("timo", 10), new APHero("jialiao", 20), new ADAPHero("xiaopao", 2) };
-		ArrayList<Hero> z5 = new ArrayList<>();
-		z5.addAll(Arrays.asList(y5));
+//		// 两种比较定义
+//		Hero[] y5 = new Hero[] { new ADHero("timo", 10), new APHero("jialiao", 20), new ADAPHero("xiaopao", 2) };
+//		ArrayList<Hero> z5 = new ArrayList<>();
+//		z5.addAll(Arrays.asList(y5));
 //		//使用comparable
 //		System.out.print("未排序数组：");
 //		for (Hero h : y5) {
@@ -710,7 +717,7 @@ public class Test {
 
 		// 耦合操作
 
-//		//专题六
+//		//TODO:专题六
 //		//上界通配符和泛型方法
 //		ArrayList<ADHero> c6 = new ArrayList<>();
 //		c6.add(new ADHero("gailun", 100));
@@ -748,21 +755,19 @@ public class Test {
 //			d6 = (Date)Class.forName("java.util.Date").newInstance();
 //			System.out.println(d6);
 //		}catch (IllegalAccessException | ClassNotFoundException | InstantiationException e) {
-//			// TODO: handle exception
 //			e.printStackTrace();
 //		}
 
-		//专题七
-		for (Hero h : z5) {
-			System.out.print(h + "" + h.getHp() + " ");
-		}
-		System.out.println();
+//		// TODO:专题七
+//		for (Hero h : z5) {
+//			System.out.print(h + "" + h.getHp() + " ");
+//		}
+//		System.out.println();
 //		//匿名类方式
 //		//注意泛型的使用Comparator<Object>也可以
 //		Comparator<? super Hero> a7 = new Comparator<Hero>() {
 //			@Override
 //			public int compare(Hero o1, Hero o2) {
-//				// TODO Auto-generated method stub
 //				return 0;
 //			}
 //		};
@@ -795,10 +800,10 @@ public class Test {
 ////		Collections.sort(z5, (o1, o2) -> o1.compareTo(o2));
 //		//引用Lambda的参数中的对象的方式
 //		Collections.sort(z5, Hero::compareTo);
-		for (Hero h : z5) {
-			System.out.print(h + "" + h.getHp() + " ");
-		}
-		System.out.println();
+//		for (Hero h : z5) {
+//			System.out.print(h + "" + h.getHp() + " ");
+//		}
+//		System.out.println();
 //		//引用构造器
 //		//lambda表达
 //		System.out.println(d7(() -> new Integer(1)));
@@ -817,28 +822,646 @@ public class Test {
 //		.filter(h -> h.getHp() >= 10)
 //		.forEach(h -> System.out.print(h + "" + h.getHp() + " "));
 //		System.out.println();
-		//比较串行流，并行流的聚合操作和集合的查找性能
-		for (int i = 0; i < 100; i++) {
-			int test = (int)(Math.random() * 30000);
-			long start = System.currentTimeMillis();
-			long number = x5.stream().filter(h -> h == test).count();
-			System.out.println("使用stream测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
-			start = System.currentTimeMillis();
-			number = x5.parallelStream().filter(h -> h == test).count();
-			System.out.println("使用parallelStream测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
-			start = System.currentTimeMillis();
-			List<Integer> list = myHashMap.get(test);
-			number = list == null ? 0 : list.size();
-			System.out.println("使用MyHashMap测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
-			start = System.currentTimeMillis();
-			number = 0;
-			for (int e : x5) {
-				if (e == test) number++;
-				
-			}
-			System.out.println("使用迭代遍历测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
-			System.out.println();
-		}
+//		// TODO:比较串行流，并行流的聚合操作和集合的查找性能
+//		for (int i = 0; i < 10; i++) {
+//			int test = (int) (Math.random() * 30000);
+//			long start = System.currentTimeMillis();
+//			Long number = x5.stream().filter(h -> h == test).count();
+//			System.out.println("使用stream测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+//			start = System.currentTimeMillis();
+//			number = x5.parallelStream().filter(h -> h == test).count();
+//			System.out.println("使用parallelStream测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+//			start = System.currentTimeMillis();
+//			List<Integer> list = myHashMap.get(test);
+//			number = list == null ? 0 : (long) list.size();
+//			System.out.println("使用MyHashMap测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+//			start = System.currentTimeMillis();
+//			number = 0l;
+//			for (int e : x5) {
+//				if (e == test)
+//					number++;
+//			}
+//			System.out.println("使用迭代遍历测试共有" + number + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+//			// 使用线程进行查找，速度略慢于parallelStream
+//			start = System.currentTimeMillis();
+//			// 用于计算数目
+//			AtomicInteger numberThread = new AtomicInteger(0);
+//			// 用于判断线程结束
+//			AtomicInteger countThread = new AtomicInteger(10);
+//			// 这个线程为了让所有线程都启动了,全部在等待访问数组列表时再开始计算
+//			AtomicLong startLong = new AtomicLong(start);
+//			new Thread() {
+//				@Override
+//				public void run() {
+//					synchronized (x5) {
+//						try {
+//							Thread.sleep(1000);
+//						} catch (InterruptedException e) {
+//						}
+//						startLong.set(System.currentTimeMillis());
+//					}
+//				}
+//			}.start();
+//			for (int j = 0; j < 10; j++) {
+//				// m是为了让线程进行访问外部变量，因为j一直在赋值，匿名类无法将j识别成final，不能访问j。
+//				int m = j;
+//				new Thread() {
+//					@Override
+//					public void run() {
+//						int l = m;
+//////						查看线程是否都启动
+////						System.out.println("启动线程" + m);
+//						// 因为是一段一段的截取查找所以不会有竞争状态
+//						for (int k = 0; k < 300000; k++) {
+//							if (x5.get(l * 300000 + k) == test) {
+//								numberThread.incrementAndGet();
+//							}
+//						}
+//						// 每个线程结束都会减1
+//						countThread.decrementAndGet();
+//					};
+//				}.start();
+//			}
+//			// 判断所有线程是否结束
+//			// 用join会多消耗时间
+//			while (countThread.get() > 0)
+//				;
+//
+//			start = startLong.get();
+//			System.out.println(
+//					"使用多线程来查找测试共有" + numberThread.get() + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+//			// 使用线程池进行查找
+//			//重新设置线程计数器10和结果数目0
+//			countThread.set(10);
+//			numberThread.set(0);
+//			//新建线程池
+//			ThreadPoolExecutor q8 = new ThreadPoolExecutor(10, 15, 60, TimeUnit.SECONDS,
+//					new LinkedBlockingDeque<Runnable>());
+//			start = System.currentTimeMillis();
+//			for (int j = 0; j < 10; j++) {
+//				int m = j;
+//				q8.execute(new Thread() {
+//					@Override
+//					public void run() {
+//						int l = m;
+//////						查看线程是否都启动
+////						System.out.println("启动线程" + m);
+//						// 因为是一段一段的截取查找所以不会有竞争状态
+//						for (int k = 0; k < 300000; k++) {
+//							if (x5.get(l * 300000 + k) == test) {
+//								numberThread.incrementAndGet();
+//							}
+//						}
+//						// 每个线程结束都会减1
+//						countThread.decrementAndGet();
+//					};
+//				});
+//			}
+//			while (countThread.get() > 0)
+//				;
+//			System.out.println(
+//					"使用线程池来查找测试共有" + numberThread.get() + "个，耗时" + (System.currentTimeMillis() - start) + "毫秒");
+//			System.out.println();
+//
+//		}
+
+//		//TODO：专题八 多线程
+//		//英雄的并行攻擊
+//		Hero a81 = new ADHero("盖伦", 7, 4, 10);
+//		Hero a82 = new ADHero("伊泽瑞尔", 1, 10, 3);
+//		Hero a83 = new APHero("提莫", 3, 3, 11);
+//		Thread b812 = new Thread(new Attack(a81, a82));
+//		Thread b821 = new Thread(new Attack(a82, a81));
+//		Thread b832 = new Thread(new Attack(a83, a82));
+//		b812.start();
+//		b821.start();
+//		b832.start();
+//		//使用匿名类创建多线程
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				System.out.println("用Thread匿名类创建多线程");
+//			};
+//		}.start();
+//		new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				System.out.println("用Runnable匿名类创建多线程");
+//			}
+//		}).start();;
+//		//Lambda
+//		new Thread(() -> System.out.println("Lambda创建多线程"))
+//		.start();
+		// 使用多线程查找的性能测试
+		// 代码在上一专题最后一项性能测试中
+		//
+//		//join 必须先start才能join
+//		Thread c8 = new Thread() {
+//			@Override
+//			public void run() {
+//				for (int i = 0; i < 10; i++)
+//					System.out.println(i);
+//			}
+//		};
+//		c8.start();
+//		//比较有无join的情况
+//		try {
+//			c8.join();
+//		}catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(9999);
+//		//线程优先级
+//		//设定两个攻速都为的英雄相互攻击，这样可以看到资源争夺
+//		Hero d81 = new ADHero("卡萨", 7, 10, 0);
+//		d81.setHp(1000);
+//		Hero d82 = new ADHero("小炮", 7, 10, 0);
+//		d82.setHp(1000);
+//		Thread e812 = new Thread(new Attack(d81, d82));
+//		Thread e821 = new Thread(new Attack(d82, d81));
+//		//在资源十分充足时无法看到效果
+//		e812.setPriority(Thread.MAX_PRIORITY);
+//		e821.setPriority(Thread.MIN_PRIORITY);
+//		Thread f8 = new Thread() {
+//			@Override
+//			public void run() {
+//				while (true)
+//					System.out.println("This is a deamon thread");
+//			}
+//		};
+//		//必须在启动线程前设置为守护线程才有用
+//		//所有用户程序结束后会自动停止的
+//		f8.setDaemon(true);
+//		f8.start();
+//		System.out.println("看看守护线程是不是最后");
+//		// 同步问题和解决办法
+//		// g8为多个线程需要近乎同时访问量
+//		Hero g8 = new ADHero("gailun");
+//		g8.setHp(10000);// 初始血量为10000
+//		// 受伤和回血各10000个线程
+//		Thread[] h8attack = new Thread[100000];
+//		Thread[] h8addHp = new Thread[100000];
+//		for (int i = 0; i < 10000; i++) {
+//			// j代替i，使匿名类可以访问
+//			int j = i;
+//			h8attack[i] = new Thread() {
+//				@Override
+//				public void run() {
+////					// 解決辦法
+////					//synchronized必须在线程里面才能使线程独占
+////					synchronized (g8) {
+//						g8.setHp(g8.getHp() - 1);
+//						System.out.println("盖伦受到英雄" + j + "的攻击，目前血量为" + g8.getHp());
+////					}
+//				};
+//			};
+//			// 启动受伤线程
+//			h8attack[i].start();
+//			h8addHp[i] = new Thread() {
+//				@Override
+//				public void run() {
+////					// 解決辦法
+////					synchronized (g8) {
+//						g8.setHp(g8.getHp() + 1);
+//						System.out.println("盖伦受到英雄" + j + "的治疗，目前血量为" + g8.getHp());
+////					}
+//				};
+//			};
+//			// 启动回血线程
+//			h8addHp[i].start();
+//		}
+//		// 等待所有线程完成
+//		try {
+//			for (int i = 0; i < 10000; i++) {
+//				h8attack[i].join();
+//				h8addHp[i].join();
+//			}
+//		} catch (InterruptedException e) {
+//		}
+//		// 结果
+//		System.out.println("最后盖伦的血量为" + g8.getHp());
+//		//实例方法前加synchronized所对应的同步对象是this
+//		for (int i = 0; i < 10000; i++) {
+//			h8addHp[i] = new Thread() {
+//				@Override
+//				public void run() {
+//					try {
+//						Thread.sleep(10);
+//					} catch (InterruptedException e) {
+//					}
+//					//在实例方法中修饰为synchronized
+//					g8.recover();
+//				}
+//			};
+//			h8addHp[i].start();
+//		}
+//		try {
+//			for (int i = 0; i < 10000; i++) {
+//				h8addHp[i].join();
+//			}
+//		} catch (InterruptedException e) {
+//		}
+//		//结果，对比有无已同步
+//		System.out.println("恢复10000次1点血后，血量为" + g8.getHp());
+//		//线程安全类
+//		//对比StringBuilder的线程操作和StringBuffer的线程操作和性能比较
+//		//几乎看不出性能差别，而且脏数据不能用的。
+//		String i8 = "";
+//		for (int i = 0; i < 100000; i++) {
+//			i8 = i8 + 'a';
+//		}
+//		StringBuilder i81 = new StringBuilder(i8);
+//		StringBuffer i82 = new StringBuffer(i8);
+//		//对StringBuilder的实例进行减少操作
+//		long j8 = System.currentTimeMillis();
+//		for (int i = 0; i < 100000; i++) {
+//			h8addHp[i] = new Thread() {
+//				@Override
+//				public void run() {
+//					//延时用于产生更多同时对实例的访问机会和性能测试
+//					try {
+//						Thread.sleep(10);
+//					}catch (InterruptedException e) {
+//					}
+//					i81.append('a');
+//				}
+//			};
+//			h8addHp[i].start();
+//		}
+//		try {
+//			for (int i = 0; i < 100000; i++) {
+//				h8addHp[i].join();
+//			}
+//		}catch (InterruptedException e) {
+//		}
+//		//多试几次，会发现产生同步修改冲突的脏数据
+//		System.out.println(i81.length() + "消耗时间" + (System.currentTimeMillis() - j8) + "ms");
+//		//对StringBuffer实例的减少操作
+//		j8 = System.currentTimeMillis();
+//		for (int i = 0; i < 100000; i++) {
+//			h8addHp[i] = new Thread() {
+//				@Override
+//				public void run() {
+//					//延时用于产生更多同时对实例的访问机会和性能测试
+//					try {
+//						Thread.sleep(10);
+//					}catch (InterruptedException e) {
+//					}
+//					i82.append('a');
+//				}
+//			};
+//			h8addHp[i].start();
+//		}
+//		try {
+//			for (int i = 0; i < 100000; i++) {
+//				h8addHp[i].join();
+//			}
+//		}catch (InterruptedException e) {
+//		}
+//		//StringBuffer同步访问冲突
+//		System.out.println(i82.length() + "消耗时间" + (System.currentTimeMillis() - j8) + "ms");
+//		List<Integer> k81 = new ArrayList<>();
+//		//由后面可知，并不会重新生成新的表的存储空间，两者还是指向同一个表
+//		List<Integer> k82 = Collections.synchronizedList(k81);
+//		for (int i = 0; i < 100000; i++) {
+//			h8addHp[i] = new Thread() {
+//				@Override
+//				public void run() {
+////					//线程安全化后不可再对之前的对象进行操作，否则一样不安全，因为两者底层还是同一个表
+////					k81.add(1);
+//					k82.add(1);
+//				}
+//			};
+//			h8addHp[i].start();
+//		}
+//		try {
+//			for (int i = 0; i < 100000; i++) {
+//				h8addHp[i].join();
+//			}
+//		} catch (InterruptedException e) {
+//		}
+//		//由下可知两者底层还是同一个表
+//		System.out.println(k81.size());
+//		System.out.println(k82.size());
+//		// 死锁演示
+//		AtomicInteger l81 = new AtomicInteger();
+//		AtomicInteger l82 = new AtomicInteger();
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				System.out.println("线程1对第一个数进行操作");
+//				synchronized (l81) {
+//					System.out.println("操作成功");
+//					try {
+//						Thread.sleep(10);
+//					} catch (InterruptedException e) {
+//					}
+//					System.out.println("线程1对第二个数进行操作");
+//					//open用于判断是否可以访问
+//					AtomicBoolean open = new AtomicBoolean(false);
+//					//这个线程输出了操作是否成功
+//					new Thread() {
+//						@Override
+//						public void run() {
+//							try {
+//								Thread.sleep(5000);
+//							} catch (InterruptedException e) {
+//							}
+//							if (open.get()) {
+//								System.out.println("操作成功");
+//							}else{
+//								System.out.println("线程1无法操作成功");
+//							}
+//							
+//						};
+//					}.start();
+//					synchronized (l82) {
+//						//表示可以访问
+//						open.set(true);
+//					}
+//				}
+//			}
+//		}.start();
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				System.out.println("线程2对第二个数进行操作");
+//				synchronized (l82) {
+//					System.out.println("操作成功");
+//					try {
+//						Thread.sleep(10);
+//					} catch (InterruptedException e) {
+//					}
+//					System.out.println("线程2对第一个数进行操作");
+//					//open用于判断是否可以访问
+//					AtomicBoolean open = new AtomicBoolean(false);
+//					new Thread() {
+//						@Override
+//						public void run() {
+//							try {
+//								Thread.sleep(5000);
+//							} catch (InterruptedException e) {
+//							}
+//							if (open.get()) {
+//								System.out.println("操作成功");
+//							}else{
+//								System.out.println("线程2无法操作成功");
+//							}
+//							
+//						};
+//					}.start();
+//					synchronized (l81) {
+//						open.set(true);
+//					}
+//				}
+//			};
+//		}.start();
+		// 线程间的交互
+		// 加血，减血两个线程处理同一个英雄。减血的线程发现血量=1，就停止减血，直到加血的线程为英雄加了血，才可以继续减血。
+		// 使用wait和notify
+		Hero n8 = new ADHero("gailun");
+		n8.setHp(100);
+//		//加血线程
+//		Thread m81 = new Thread() {
+//			@Override
+//			public void run() {
+//				super.run();
+//				while(true) {
+//					try {
+//						Thread.sleep(110);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//					synchronized (n8) {
+//						System.out.print("目前血量为" + n8.getHp() + ",尝试恢复10点...");
+//						n8.recover(10);
+//						System.out.println("恢复成功");
+//						//唤醒原先对该对象的访问时wait的线程
+//						n8.notify();
+//					}
+//				}
+//			}
+//		};
+//		m81.start();
+//		//减血线程，设计比加血快
+//		Thread m82 = new Thread() {
+//			@Override
+//			public void run() {
+//				super.run();
+//				while(true) {
+//					try {
+//						Thread.sleep(10);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//					//wait必须在synchronized里面
+//					synchronized (n8) {
+//						if (n8.getHp() > 0) {
+//							System.out.print("目前血量为" + n8.getHp() + ",尝试减少1点...");
+//							n8.reduce();
+//							System.out.println("扣血成功");
+//						}else {
+//							System.out.println("英雄已死");、
+//							//英雄没血了，让访问该对象的动作先暂停占用该对象等待唤醒
+//							try {
+//								n8.wait();
+//							} catch (InterruptedException e) {
+//							}
+//						}
+//					}
+//				}
+//			}
+//		};
+//		m82.start();
+//		// 生产者消费者问题
+//		// 如何實現生產少時加快生產，生產多少減慢生產？？？？
+//		MyBlockingStack<String> o8 = new MyBlockingStack<>(new Stack<String>());
+//		//7條生產綫
+//		for (int i = 0; i < 7; i++) {
+//			new Producer(o8).start();
+//		}
+//		//3條消費綫
+//		for (int i = 0; i < 3; i++) {
+//			new Consumer(o8).start();
+//		}
+//		//线程池设计思路：由消费者问题联系的綫程池
+//		//o8相当于任务队列
+//		ConsumerPool p8 = new ConsumerPool(o8);
+//		for (int i = 0; i < 10; i++) {
+//			p8.execute(new Consumer(o8));
+//		}
+//		for (int i = 0; i < 1000; i++) {
+//			o8.push(new Scanner(System.in).nextLine());
+//		}
+//		//自定义线程池与测试
+//		MyThreadPool myThreadPool = new MyThreadPool(10);
+//		try {
+//			Thread.sleep(100);
+//			System.out.println("等待线程池中的线程全部启动");
+//		} catch (InterruptedException e) {
+//		}
+//		for (int i = 0; i < 100; i++) {
+//			//设计添加速度越来越快
+//			try {
+//				Thread.sleep(1000 - i * 10);
+//			} catch (InterruptedException e) {
+//			}
+//			myThreadPool.execute(new Thread() {
+//				@Override
+//				public void run() {
+//					super.run();
+//					try {
+//						Thread.sleep(500);
+//					} catch (InterruptedException e) {
+//					}
+//					System.out.println("执行" + getName());
+//				}
+//			});
+//		}
+//		//TODO:测试使用线程来查找的性能
+//		//见专题七的查找性能
+		// TODO:使用Lock对象实现同步效果
+		Lock r8 = new ReentrantLock();
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				if (r8.tryLock())
+//					try {
+//						System.out.println(Thread.currentThread().getName() + "得到锁，等待2秒");
+//						Thread.sleep(2000);
+//					} catch (InterruptedException e) {
+//					} finally {
+//						//解锁tryLock
+//						r8.unlock();
+//						System.out.println("释放锁");
+//					}
+//			}
+//		}.start();
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				try {
+//					r8.lock();
+//					System.out.println(Thread.currentThread().getName() + "得到锁，等待3秒");
+//					Thread.sleep(3000);
+//				} catch (InterruptedException e) {
+//				} finally {
+//					System.out.println("释放锁");
+//					r8.unlock();
+//				}
+//			}
+//		}.start();
+//		// lockInterruptibly例子
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				r8.lock();
+//				System.out.println(Thread.currentThread().getName() + "正在占用锁");
+//				//延时使得等待锁的线程等待更久
+//				try {
+//					Thread.sleep(1000);
+//				} catch (InterruptedException e) {
+//				} finally {
+//					r8.unlock();
+//				}
+//			};
+//		}.start();
+//		;
+//		Thread s8 = new Thread() {
+//			@Override
+//			public void run(){
+//				//这里由于开头延时也要同样的异常处理，所有lockInterruptibly不用和平时那样在方法外声明抛出异常
+//				try {
+//					Thread.sleep(100);
+//					//改成r8.lock()则在等待过程中无法中断，同理synchronized也无法中断
+//					r8.lockInterruptibly();
+//					try {
+//						System.out.println(Thread.currentThread().getName() + "还在工作");
+//					} finally {
+//						r8.unlock();
+//					}
+//				} catch (InterruptedException e) {
+//					System.out.println(Thread.currentThread().getName() + "在等待过程中断");
+//				}
+//			}
+//		};
+//		s8.start();
+//		System.out.println(s8.getName() + "已启动");
+//		//延时确保需要中断的线程在等待锁的时候中断
+//		try {
+//			Thread.sleep(200);
+//		}catch (InterruptedException e) {
+//		}
+//		//此时中断会在等待锁的时候中断
+//		s8.interrupt();
+//		// TODO:Lock线程交互
+//		Stack<String> t8 = new Stack<>();
+//		//栈满条件
+//		Condition u8empty = r8.newCondition();
+//		//栈空条件
+//		Condition u8full = r8.newCondition();
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				try {
+//					pop();
+//				} catch (InterruptedException e) {
+//				}
+//			}
+//			
+//			void pop() throws InterruptedException{
+//				r8.lockInterruptibly();
+//				try {
+//					while (true) {
+//						if (t8.isEmpty()) {
+//							System.out.println("已空，暂停删除，启动添加线程");
+//							//唤醒栈满时await的线程
+//							u8full.signal();
+//							//让本线程放弃锁等待唤醒
+//							u8empty.await();
+//						}
+//						Thread.sleep(1000);
+//						System.out.println("删除一个元素");
+//						t8.pop();
+//					}
+//				} catch (InterruptedException e) {
+//				}finally {
+//					r8.unlock();
+//				}
+//			}
+//		}.start();
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				try {
+//					push();
+//				} catch (InterruptedException e) {
+//				}
+//			}
+//			
+//			void push() throws InterruptedException{
+//				r8.lockInterruptibly();
+//				try {
+//					while (true) {
+//						if (t8.size() >= 20) {
+//							System.out.println("已满，暂停添加，启动删除线程");
+//							//唤醒栈空时await的线程
+//							u8empty.signal();
+//							//让本线程放弃锁等待唤醒
+//							u8full.await();
+//						}
+//						Thread.sleep(1000);
+//						System.out.println("添加一个元素");
+//						t8.push("a");
+//					}
+//				} catch (InterruptedException e) {
+//				}finally {
+//					r8.unlock();
+//				}
+//			}
+//		}.start();
+
 	}
 
 	private static void openAFile(File f) throws IOException {
@@ -873,7 +1496,7 @@ public class Test {
 		// t同时具备Comparable和Number的属性
 		System.out.println(t.getClass());
 	}
-	
+
 	private static int b7(Hero o1, Hero o2) {
 		if (o1.getHp() > o2.getHp())
 			return 1;
@@ -883,11 +1506,11 @@ public class Test {
 			return 0;
 		}
 	}
-	
+
 	private static int b71(Object o1, Hero o2) {
 		return 0;
 	}
-	
+
 	private int c7(Hero o1, Hero o2) {
 		if (o1.getHp() > o2.getHp())
 			return 1;
@@ -897,7 +1520,7 @@ public class Test {
 			return 0;
 		}
 	}
-	
+
 	private static <T> T d7(Supplier<T> s) {
 		return s.get();
 	}
