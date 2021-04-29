@@ -34,7 +34,13 @@ public abstract class Hero implements Serializable, Comparable<Hero>{
     }
     
     public Hero(String name, int armor, int aggressivity, int attackSpeed) {
-		// TODO Auto-generated constructor stub
+    	this.name = name;
+    	this.armor = armor;
+    	this.aggressivity = aggressivity;
+    	this.attackSpeed = attackSpeed;
+	}
+    
+    public Hero(String name, int hp, int armor, int moveSpeed, int aggressivity, int attackSpeed) {
     	this.name = name;
     	this.armor = armor;
     	this.aggressivity = aggressivity;

@@ -461,4 +461,143 @@ https://gourderwa.blog.csdn.net/article/details/103701793
 8.9.3 状态
 https://blog.csdn.net/qq_22771739/article/details/82529874
 https://www.runoob.com/java/thread-status.html（后面有测试程序）
+23:22 2021/4/21
+
+专题九 JDBC MySQL数据库连接 https://blog.csdn.net/qq_22172133/article/details/81266048
+9.1 JDBC (Java DataBase Connection) 是通过JAVA访问数据库
+9.1.1 https://blog.csdn.net/qq_22172133/article/details/81266048
+	加载数据库驱动（mysql8不需要手动加载）：通过Class.forName();
+	建立数据库连接 DriverManager.getConnection(url,user,pass); 
+	创建Statement
+	执行Statement语句
+	关闭连接：数据库的连接是有限资源，相关操作结束后，养成关闭数据库的好习惯，先关闭Statement，后关闭Connection
+		可以使用try-with-resource的方式自动关闭连接，因为Connection和Statement都实现了AutoCloseable接口
+		打开时：Connection -> PreparedStatement -> ResultSet
+		关闭时：ResultSet-> PreparedStatement -> Connection
+9.2 增删查改CRUD
+增加 create：create database xxx; create table xxx ( column_name column_type, ... ); insert into xxx values();
+删除 delete: drop database xxx; drop table xxx; delete from xxx where xx = xx;
+查询 retrieve：select xxx from xxx; show databases;
+更新 update：update xxx set xxx = xxx where xxx = xxx; alter 
+9.2.1 Statement常用的方法
+executeQuery（用于向数据库发送查询语句）
+executeUpdate（用于向数据库发送增删改语句）
+execute（用于发送任意语句）
+addBatch(把多条sql语句放到一个批处理中）
+executeBatch（向数据库发送一批sql语句执行）
+9.3 执行查询语句
+9.3.1 获取结果 https://blog.csdn.net/qq_22172133/article/details/81266048
+Jdbc程序中的ResultSet用于代表Sql语句的执行结果。
+Resultset封装执行结果时，采用的类似于表格的方式，
+ResultSet 对象维护了一个指向表格数据行的游标，初始的时候，游标在第一行之前,next最后会在最后一行之后，即这两个地方为null，
+调用ResultSet.next() 方法，可以使游标指向具体的数据行，进行调用方法获取该行的数据。
+获取行：
+	ResultSet提供了对结果集进行滚动的方法：
+		next()：移动到下一行（见Test)
+		Previous()：移动到前一行
+		absolute(int row)：移动到指定行
+		beforeFirst()：移动resultSet的最前面。
+		afterLast() ：移动到resultSet的最后面。
+获取值：
+	获取数据的get方法：
+		获取任意类型的数据：getObject(int index)	getObject(string columnName)
+		获取指定类型的数据，例如：getString(int index) getString(String columnName)
+		getInt getLong ...
+在取第二列的数据的时候，用的是get(2) ，而不是get(1). 这个是整个Java自带的api里唯二的地方，使用基1的，即2就代表第二个。另一个地方是在PreparedStatement这里
+9.3.2 SQL判断账号密码是否正确（见Test）
+正确方式是根据账号和密码到表中去找数据，如果有数据，就表明密码正确了，如果没数据，就表明密码错误。
+不恰当的方式 是把uers表的数据全部查到内存中，挨个进行比较。
+9.3.3 获取总数（见Test）
+select count(*) from hero
+9.3.4 设计分页查询（见Test）
+select * from hero limit 0,5
+从0开始查5个
+9.4 预编译PreparedStatement(见Test）
+和 Statement一样，PreparedStatement也是用来执行sql语句的
+与创建Statement不同的是，需要根据sql语句创建PreparedStatement
+除此之外，还能够通过设置参数，指定相应的值，而不是Statement那样使用字符串拼接
+注： 这是JAVA里唯二的基1的地方，另一个是查询语句中的ResultSet也是基1的。
+9.4.1 优点1：参数设置
+Statement 需要进行字符串拼接，可读性和维护性比较差
+String sql = "insert into hero values(null,"+"'提莫'"+","+313.0f+","+50+")";
+PreparedStatement 使用参数设置，可读性好，不易犯错
+String sql = "insert into hero values(null,?,?,?)";
+9.4.2 优点2：性能表现（见Test)
+PreparedStatement有预编译机制，性能比Statement更快
+PreparedStatement 执行多次，只需要1次把SQL语句传输到数据库端
+            // 数据库对带?的SQL进行预编译
+            // 每次执行，只需要传输参数到数据库端
+            // 1. 网络传输量比Statement更小
+            // 2. 数据库不需要再进行编译，响应更快
+9.4.3 优点3：防止SQL注入式攻击（见Test）
+例如"OR 1=1"在数据后面一起提交
+9.5 execute 和executeUpdate
+相同点：都可以执行增加，删除，修改
+不同点：	execute可以执行查询语句然后通过getResultSet，把结果集取出来
+	executeUpdate不能执行查询语句
+	execute返回boolean类型，true表示执行的是查询语句，false表示执行的是insert,delete,update等等
+	executeUpdate返回的是int，表示有多少条数据受到了影响
+9.6 特殊操作
+9.6.1自增的设置和获取，删除元素要修改自增复位（见Test）
+https://blog.csdn.net/pupilxiaoming/article/details/54694765
+https://blog.csdn.net/qq_40378034/article/details/90736544
+无论是execute还是executeUpdate都不会返回这个自增长id是多少。需要通过Statement的getGeneratedKeys获取该id
+PreparedStatement需要Statement.RETURN_GENERATED_KEYS参数，以确保会返回自增长ID
+9.6.2 获取表的元数据（见Test）
+元数据概念：
+和数据库服务器相关的数据，比如数据库版本，有哪些表，表有哪些字段，字段类型是什么等等。
+9.7 事务
+在Mysql中，只有当表的类型是INNODB的时候，才支持事务，所以需要把表的类型设置为INNODB,否则无法观察到事务.
+修改表的类型为INNODB的SQL：alter table hero ENGINE  = innodb;
+查看表的类型的SQLshow table status from how2java; 
+前提：当前的MYSQL服务器本身要支持INNODB,如果不支持，请开启MYSQL INNODB
+不使用事务的情况：几个操作需要捆绑一起执行时，若某个操作出现异常，则其他操作执行成功。
+在事务中的多个操作，要么都成功，要么都失败
+通过 c.setAutoCommit(false);关闭自动提交
+使用 c.commit();进行手动提交
+设置回滚点
+9.7.1 batch 批量执行PreparedStatement中只有占位符参数不同的SQL
+9.8 ORM ORM=Object Relationship Database Mapping
+对象和关系数据库的映射(见Test）
+9.9 DAO DAO=DataAccess Object
+数据访问对象,数据库相关的操作都封装在这个类（见Test）
+9.10 数据库连接池
+9.10.1 传统方式连接
+有多个线程都需要连接数据库执行SQL语句，那每个线程都会创建一个连接，在使用完毕后，关闭连接。
+创建和关闭连接的过程是消耗时间的。过多线程并发，会造成系统卡顿。
+一个数据库同时支持的连接总数是有限的。多线程并发量很大，那么数据库连接的总数就会被消耗光，后续线程发起的数据库连接就会失败。
+9.10.2 使用数据库连接池
+连接池在使用之前，就会 创建好 一定数量 的连接。
+如果有任何线程需要使用连接，就从连接池里面 借用 ，而不是自己重新创建.
+使用完毕后，又把这个连接 归还 给连接池 供下一次或者其他线程使用。
+发生多线程并发情况，连接池里的连接被 借用光 了，那么其他线程就会 临时等待 ，直到有连接被归还回来，再继续使用。
+整个过程，这些连接 都不会被关闭 ，而是 不断的被循环使用 ，从而节约了启动和关闭连接的时间。
+9.10.3 自定义ConnectionPool（见Test）
+a、构造方法约定了一个有多少个连接
+b、自动关闭所有连接（实现AutoCloseable)或者手动关闭的方法
+c、getConnection， 判断是否为空，如果是空的就wait等待，否则就借用一条连接出去
+d、returnConnection， 在使用完毕后，归还这个连接到连接池，并且在归还完毕后，调用notifyAll，通知那些等待的线程，有新的连接可以借用了。
+9.10.4 常用数据库连接池API
+HikariCP ：（见Test）
+https://blog.csdn.net/huhumiss/article/details/100038563?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_v2~rank_aggregation-1-100038563.pc_agg_rank_aggregation&utm_term=hikaricp%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B&spm=1000.2123.3001.4430
+https://blog.csdn.net/sinat_34093604/article/details/79713296 DataSource也是一个非常昂贵的操作，所以通常DataSource实例总是作为一个全局变量存储
+C3P0
+BoneCP
+Druid
+JdbcUtils：DBCP 数据库连接池 C3P0 数据库连接池 https://blog.csdn.net/qq_22172133/article/details/81266048
+9.10.5 使用连接池和传统方式的性能比较（见Test）。
+1. 使用传统方式创建100个线程，每个线程都会创建新的连接，通过这个连接向数据库插入1条数据，然后关闭这个连接。
+2. 使用数据库连接池HikariCP的方式，创建一个有10条连接的连接池，然后创建100个线程，每个线程都会向连接池借用连接，借用到后，向数据库插入1条数据，然后归还这个连接。
+通过时间统计，比较这两种方式的性能表现差异。
+21:45 2021/4/29
+
+
+
+
+
+
+
+
+
+
 

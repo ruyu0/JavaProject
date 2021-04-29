@@ -33,3 +33,5 @@ https://segmentfault.com/a/1190000014170298
 工具目录：C:\Program Files\Java\jdk1.6.0_06\bin\jconsole.exe
 
 6.Thread相关方法：currentTread(), sleep()
+
+7.java IO之AutoCloseable,Closeable和Flushable接口 https://blog.csdn.net/z69183787/article/details/78258320
