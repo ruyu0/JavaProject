@@ -18,6 +18,13 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +47,9 @@ import java.util.Stack;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -53,8 +63,12 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.net.ssl.SSLEngineResult.Status;
+import javax.sql.DataSource;
 
 import org.omg.CORBA.TIMEOUT;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 import battle.Attack;
 import character.AD;
@@ -64,6 +78,7 @@ import character.APHero;
 import character.Hero;
 import character.Hero.EnemyCrystal;
 import comparator.HeroComparatorByHp;
+import conneticon_pool.MyConnectionPool;
 import character.Hero.BattleScore;
 import character.Item;
 import character.Season;
@@ -71,6 +86,7 @@ import myException.EnemyHeroIsDeadException;
 import myHashMap.MyHashMap;
 import myStringBuffer.MyStringBuffer;
 import mytree.BTree;
+import orm_dao.HeroDAO;
 import produce_consumer.Consumer;
 import produce_consumer.ConsumerPool;
 import produce_consumer.MyBlockingStack;
@@ -475,13 +491,13 @@ public class Test {
 //		//层序遍历
 //		e5.levelOrderTraverse();
 
-		// 比较使用HashMap查找的方法性能，找出数量和所在位置
-		// 准备一个ArrayList其中存放3000000(三百万个)Integer对象，其名称是随机的,格式是[4位随机数]
-		ArrayList<Integer> i5 = new ArrayList<>();
-		for (int i = 0; i < 3000000; i++) {
-			// eclipse输出有限制，没办法只能是6622，具体可以通过cmd测试
-			i5.add((int) (Math.random() * 6622));
-		}
+//		// TODO:比较使用HashMap查找的方法性能，找出数量和所在位置
+//		// 准备一个ArrayList其中存放3000000(三百万个)Integer对象，其名称是随机的,格式是[4位随机数]
+//		ArrayList<Integer> i5 = new ArrayList<>();
+//		for (int i = 0; i < 3000000; i++) {
+//			// eclipse输出有限制，没办法只能是6622，具体可以通过cmd测试
+//			i5.add((int) (Math.random() * 6622));
+//		}
 //		//把值相同的数据所在的ArrayList的位置存在一个List中，这个List作为一个value，这个数据值作为一个key，存入HashMap中
 //		HashMap<Integer, List<Integer>> j5 = new HashMap<>();
 //		for (int i = 0; i < 3000000; i++) {
@@ -638,21 +654,21 @@ public class Test {
 //		myHashcode(w5);
 //		System.out.println(w5.hashCode());
 
-		// TODO:自定义HashMap(myHashMap)并由此和ArrayList(x5)比较查找性能
-		MyHashMap<Integer, LinkedList<Integer>> myHashMap = new MyHashMap<>();
-		ArrayList<Integer> x5 = new ArrayList<>();
-		for (int i = 0; i < 3000000; i++) {
-			int temp = (int) (Math.random() * 30000);
-			x5.add(temp);
-			LinkedList<Integer> list = myHashMap.get(temp);
-			if (list == null) {
-				list = new LinkedList<>();
-				list.add(i);
-				myHashMap.put(temp, list);
-			} else {
-				list.add(i);
-			}
-		}
+//		// TODO:自定义HashMap(myHashMap)并由此和ArrayList(x5)比较查找性能
+//		MyHashMap<Integer, LinkedList<Integer>> myHashMap = new MyHashMap<>();
+//		ArrayList<Integer> x5 = new ArrayList<>();
+//		for (int i = 0; i < 3000000; i++) {
+//			int temp = (int) (Math.random() * 30000);
+//			x5.add(temp);
+//			LinkedList<Integer> list = myHashMap.get(temp);
+//			if (list == null) {
+//				list = new LinkedList<>();
+//				list.add(i);
+//				myHashMap.put(temp, list);
+//			} else {
+//				list.add(i);
+//			}
+//		}
 //		//随机拿十个数来测试查找性能，查找第一个查到的
 //		for (int i = 0; i < 10; i++) {
 //			int temp = (int)(Math.random() * 30000);
@@ -1217,11 +1233,11 @@ public class Test {
 //				}
 //			};
 //		}.start();
-		// 线程间的交互
-		// 加血，减血两个线程处理同一个英雄。减血的线程发现血量=1，就停止减血，直到加血的线程为英雄加了血，才可以继续减血。
-		// 使用wait和notify
-		Hero n8 = new ADHero("gailun");
-		n8.setHp(100);
+//		// 线程间的交互
+//		// 加血，减血两个线程处理同一个英雄。减血的线程发现血量=1，就停止减血，直到加血的线程为英雄加了血，才可以继续减血。
+//		// 使用wait和notify
+//		Hero n8 = new ADHero("gailun");
+//		n8.setHp(100);
 //		//加血线程
 //		Thread m81 = new Thread() {
 //			@Override
@@ -1294,7 +1310,7 @@ public class Test {
 //		for (int i = 0; i < 1000; i++) {
 //			o8.push(new Scanner(System.in).nextLine());
 //		}
-//		//自定义线程池与测试
+//		//TODO:自定义线程池与测试
 //		MyThreadPool myThreadPool = new MyThreadPool(10);
 //		try {
 //			Thread.sleep(100);
@@ -1321,8 +1337,8 @@ public class Test {
 //		}
 //		//TODO:测试使用线程来查找的性能
 //		//见专题七的查找性能
-		// TODO:使用Lock对象实现同步效果
-		Lock r8 = new ReentrantLock();
+//		// TODO:使用Lock对象实现同步效果
+//		Lock r8 = new ReentrantLock();
 //		new Thread() {
 //			@Override
 //			public void run() {
@@ -1461,6 +1477,332 @@ public class Test {
 //				}
 //			}
 //		}.start();
+
+//		//TODO:专题九 JDBC MySQL数据库连接
+//		try {
+////			//不需要手动加载驱动了
+////			Class.forName("com.mysql.jdbc.Driver");
+////			System.out.println("数据库驱动加载");
+//			Connection c = DriverManager
+//                .getConnection(
+//                        "jdbc:mysql://localhost:3306/world",
+//                        "root", "tiger");
+//			System.out.println("数据库连接成功");
+//			Statement statement = c.createStatement();
+//			statement.execute("use test;");
+//			//关闭流
+//			c.close();
+//			statement.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		//向表中插入数据
+//		try (
+//				Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "tiger");
+//				Statement statement = c.createStatement();
+//				){
+//			for (int i = 0; i < 100; i++)
+//			statement.execute("insert into hero values(" + (i + 1) + ", \"hero" + i + "\", "
+//			+ (int)(Math.random() * 100) + ", "
+//					+ (int)(Math.random() * 100) + ", "
+//					+ (int)(Math.random() * 10) + ", " 
+//					+ (int)(Math.random() * 100) + ", " 
+//					+ (int)(Math.random() * 10) 
+//					+ ");");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		// TODO：预编译PreparedStatement,判断账号密码是否正确，获取总数，分页查询,PreparedStatement和Statement性能比较，防止SQL注入式攻击
+//		try (Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "tiger");
+//				PreparedStatement p = c.prepareStatement("select * from hero where name like ? and hp > ? limit ?, ?;");) {
+//			//判断账号密码是否正确,类似
+//			//设置参数，下标从1开始
+//			p.setString(1, "hero0");
+//			p.setInt(2, 70);
+//			p.setInt(3, 0);
+//			p.setInt(4, 99);
+//			ResultSet rs = p.executeQuery();
+//			//查询到限定的结果则正确
+//			if (rs.next()) {
+//				//获得该行的列结果，下标也是从1开始
+//				System.out.println("结果正确" + rs.getString(1));
+//			}else {
+//				System.out.println("无结果");
+//			}
+//			rs.close();
+//			//分页查询，获取总数
+//			p.setString(1, "hero%");
+//			p.setInt(2, 50);
+//			//设置分页查询
+//			p.setInt(3, 4);
+//			p.setInt(4, 50);
+//			rs = p.executeQuery();
+//			int count = 0;
+//			while (rs.next()) {
+//				count++;
+//			}
+//			rs.close();
+//			System.out.println("分页查询总共查询到" + count);
+//			//防止SQL注入
+//			//设SQL注入式攻击的用户提交的信息为"'hero' or 1 = 1"
+//			Statement s = c.createStatement();
+//			rs = s.executeQuery("select * from hero where name like " + "'hero0' or 1 =1" + " and hp > 50 limit 0, 99;");
+//			count = 0;
+//			while (rs.next()) count++;
+//			System.out.println("SQL注入式攻击的结果为" + count);
+//			rs.close();
+//			//PreparedStatement防止SQL注入式攻击
+//			p.setString(1, "'hero0' or 1 =1");
+//			p.setInt(2, 50);
+//			p.setInt(3, 0);
+//			p.setInt(4, 99);
+//			rs = p.executeQuery();
+//			if (rs.next()) System.out.println("SQL注入式攻击成功");
+//			else System.out.println("阻止SQL注入式攻击");
+//			rs.close();
+//			//性能比较
+//			long start = System.currentTimeMillis();
+//			for (int i = 0; i < 10000; i++) {
+//				rs = s.executeQuery("select * from hero where name like \"hero%\" and hp > 0 limit 0, 99;");
+//			}
+//			System.out.println("每次执行sql语句消耗时间" + (System.currentTimeMillis() - start));
+//			rs.close();
+//			s.close();
+//			start = System.currentTimeMillis();
+//			for (int i = 0; i < 10000; i++) {
+//				p.setString(1, "hero%");
+//				p.setInt(2, 0);
+//				p.setInt(3, 0);
+//				p.setInt(4, 99);
+//				rs = p.executeQuery();
+//			}
+//			System.out.println("每次传入参数消耗时间" + (System.currentTimeMillis() - start));
+//			rs.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		// TODO:自增ID的设置和获取
+//		// 自增的效果和自增字段的获取
+//		try (Connection c = DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "tiger");
+//				PreparedStatement p = c.prepareStatement("insert into hero values(null, ?, ?, ?, ?, ?, ?);",
+//						//该参数确保会返回自增字段
+//						Statement.RETURN_GENERATED_KEYS);) {
+//			// 第一个值ID可以已经设为自增
+//			p.setString(1, "盖伦");
+//			p.setInt(2, 99);
+//			p.setInt(3, 20);
+//			p.setInt(4, 3);
+//			p.setInt(5, 88);
+//			p.setInt(6, 5);
+//			p.execute();
+//			//获取自增ID
+//			ResultSet rs = p.getGeneratedKeys();
+//			while (rs.next()) {
+//				System.out.println(rs.getInt(1));
+//			}
+//			rs.close();
+//			//删除元素复位自增
+//			p.executeUpdate("delete from hero where name = '盖伦';");
+//			p.executeUpdate("ALTER TABLE HERO AUTO_INCREMENT = 100;");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		//TODO:查看数据库元数据
+//		try (Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "tiger");) {
+//			// 查看数据库层面的数据
+//			DatabaseMetaData dbmd = c.getMetaData();
+//			// 获取数据库服务器产品名称
+//			System.out.println("数据库产品名称:\t" + dbmd.getDatabaseProductName());
+//			// 获取数据库服务器产品版本号
+//			System.out.println("数据库产品版本:\t" + dbmd.getDatabaseProductVersion());
+//			// 获取数据库服务器用作类别和表名之间的分隔符 如test.user
+//			System.out.println("数据库和表分隔符:\t" + dbmd.getCatalogSeparator());
+//			// 获取驱动版本
+//			System.out.println("驱动版本:\t" + dbmd.getDriverVersion());
+//			System.out.println("可用的数据库列表：");
+//			// 获取数据库名称
+//			ResultSet rs = dbmd.getCatalogs();
+//			while (rs.next()) {
+//				System.out.println("数据库名称:\t" + rs.getString(1));
+//			}
+//			rs.close();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		//TODO:事务
+//		try (Connection c = DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "tiger");
+//				PreparedStatement p = c.prepareStatement("insert into hero values(null, ?, ?, ?, ?, ?, ?);",
+//						//该参数确保会返回自增字段
+//						Statement.RETURN_GENERATED_KEYS);) {
+//			//必须设置table类型
+//			p.execute("ALTER TABLE HERO ENGINE = INNODB;");
+////			//关闭自动提交
+////			c.setAutoCommit(false);
+//			// 第一个值ID可以已经设为自增
+//			p.setString(1, "盖伦");
+//			p.setInt(2, 99);
+//			p.setInt(3, 20);
+//			p.setInt(4, 3);
+//			p.setInt(5, 88);
+//			p.setInt(6, 5);
+//			p.execute();
+//			//删除元素复位自增
+//			//假设from少了m，查看数据库可看到有事务时前面的执行也无法执行，否则前面执行了，后面没有执行
+//			p.executeUpdate("delete fro hero where name = '盖伦';", Statement.RETURN_GENERATED_KEYS);
+//			p.executeUpdate("ALTER TABLE HERO AUTO_INCREMENT = 100;", Statement.RETURN_GENERATED_KEYS);
+//			//一起手动提交
+//			c.commit();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		//TODO:ORM(对象和关系数据库的映射) DAO(数据访问对象)
+//		List<Hero> a9 = new HeroDAO().list(8, 29); 
+//		System.out.println("总共有" + a9.size());
+//		// TODO:使用数据库连接池ConnectionPool
+//		//设置一个20线程的池。线程数量大于连接数量以产生争夺
+//		ExecutorService b9 = Executors.newFixedThreadPool(20);
+//		//100个线程，方便join
+//		Thread c9[] = new Thread[100];
+//		System.out.println("ID\t name\t HP\t armor\t moveSpeed\t aggressivity\t attackSpeed");
+//		//自定义连接池实现自动关闭以关闭所有连接，大小为10
+//		try (MyConnectionPool myConnectionPool = new MyConnectionPool("jdbc:mysql://localhost/test", "root", "tiger",
+//				10);) {
+//			Lock lock = new ReentrantLock();
+//			CountDownLatch countDownLatch = new CountDownLatch(100);
+//			for (int i = 0; i < 100; i++) {
+//				int j = i;//为了让线程中可以使用i
+//				c9[i] = new Thread() {
+//					@Override
+//					public void run() {
+//						try {
+//							//获取连接
+//							Connection c = myConnectionPool.getConnection();
+//							PreparedStatement p = c.prepareStatement("select * from hero limit ?, 1");
+//							p.setInt(1, j);
+//							ResultSet rs = p.executeQuery();
+//							while (rs.next()) {
+//								//lock使每条数据输出保持格式不冲突
+//								lock.lock();
+//								System.out.print(rs.getInt(1) + "\t ");
+//								System.out.print(rs.getString(2) + "\t ");
+//								System.out.print(rs.getInt(3) + "\t ");
+//								System.out.print(rs.getInt(4) + "\t ");
+//								System.out.print(rs.getInt(5) + "\t\t ");
+//								System.out.print(rs.getInt(6) + "\t\t ");
+//								System.out.print(rs.getInt(7));
+//								System.out.println();
+//								lock.unlock();
+//							}
+//							//一定要手动关闭
+//							rs.close();
+//							p.close();
+//							//收回连接
+//							myConnectionPool.returnConnection(c);
+//							countDownLatch.countDown();
+//						} catch (SQLException | InterruptedException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				};
+//				b9.execute(c9[i]);
+//			}
+//			//必须等所有线程完成，因为连接池的关闭功能必须是最后执行
+////			//在线程池执行时使用join依然会有同步问题
+////			for (int i = 0; i < 100; i++) {
+////				c9[i].join();
+////			}
+//			//使用CountDownLatch实现等待其他线程全部完成
+//			countDownLatch.await();
+//		} catch (SQLException | InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		// TODO：比较传统方式和连接池的性能
+//		// 传统方式
+//		Thread d9[] = new Thread[100];
+//		// 所有hp的总和，用于验证结果是否正确
+//		AtomicInteger sumHP = new AtomicInteger(0);
+//		// 用于等待线程全部结束
+//		CountDownLatch e9 = new CountDownLatch(100);
+//		// 创建线程
+//		for (int i = 0; i < 100; i++) {
+//			int j = i;
+//			d9[i] = new Thread() {
+//				@Override
+//				public void run() {
+//					try (Connection c = DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "tiger");
+//							Statement s = c.createStatement();) {
+//						ResultSet rs = s.executeQuery("select HP from hero where ID = " + j);
+//						while (rs.next())
+//							sumHP.addAndGet(rs.getInt(1));
+//						rs.close();
+//					} catch (SQLException e) {
+//						e.printStackTrace();
+//					}
+//					e9.countDown();
+//				}
+//			};
+//		}
+//		// 在启动线程前计时
+//		long start9 = System.currentTimeMillis();
+//		// 启动线程
+//		for (int i = 0; i < 100; i++) {
+//			d9[i].start();
+//		}
+//		// 等待所有线程完成
+//		try {
+//			e9.await();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("传统方式结果为" + sumHP);
+//		System.out.println("传统方式所耗时" + (System.currentTimeMillis() - start9));
+//		// 使用连接池HikariCP
+//		HikariConfig f9 = new HikariConfig();
+//		f9.setJdbcUrl("jdbc:mysql://localhost/test");
+//		f9.setUsername("root");
+//		f9.setPassword("tiger");
+//		f9.addDataSourceProperty("connectionTimeout", "1000"); // 连接超时：1秒
+//		f9.addDataSourceProperty("idleTimeout", "60000"); // 空闲超时：60秒
+//		f9.addDataSourceProperty("maximumPoolSize", 10);
+//		DataSource ds = new HikariDataSource(f9);
+//		// 重新赋值结果
+//		sumHP.set(0);
+//		// 线程计数器
+//		CountDownLatch g9 = new CountDownLatch(100);
+//		for (int i = 0; i < 100; i++) {
+//			int j = i;
+//			d9[i] = new Thread() {
+//				@Override
+//				public void run() {
+//					try  (
+//							Connection c = ds.getConnection();
+//							Statement s = c.createStatement();){
+//						ResultSet rs = s.executeQuery("select HP from hero where ID = " + j);
+//						while (rs.next())
+//							sumHP.addAndGet(rs.getInt(1));
+//						// 手动关闭
+//						rs.close();
+//					} catch (SQLException e) {
+//						e.printStackTrace();
+//					}
+//					g9.countDown();
+//				}
+//			};
+//		}
+//		// 在启动线程前计时
+//		start9 = System.currentTimeMillis();
+//		// 启动线程
+//		for (int i = 0; i < 100; i++) {
+//			d9[i].start();
+//		}
+//		// 等待所有线程完成
+//		try {
+//			g9.await();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("连接池结果为" + sumHP);
+//		System.out.println("连接池所耗时" + (System.currentTimeMillis() - start9));
 
 	}
 
