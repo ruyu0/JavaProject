@@ -1,2 +1,17 @@
 /com/
+/.gitignore
+/Test$1.class
+/battle/
+/character/
+/comparator/
+/conneticon_pool/
+/myException/
+/myHashMap/
+/myStringBuffer/
+/mytree/
+/orm_dao/
+/produce_consumer/
+/test.class
 /test/
+/关于java各种内存和线程内存的设置和测试.txt
+/总结.txt

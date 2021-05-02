@@ -1512,75 +1512,75 @@ public class Test {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-//		// TODO：预编译PreparedStatement,判断账号密码是否正确，获取总数，分页查询,PreparedStatement和Statement性能比较，防止SQL注入式攻击
-//		try (Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "tiger");
-//				PreparedStatement p = c.prepareStatement("select * from hero where name like ? and hp > ? limit ?, ?;");) {
-//			//判断账号密码是否正确,类似
-//			//设置参数，下标从1开始
-//			p.setString(1, "hero0");
-//			p.setInt(2, 70);
-//			p.setInt(3, 0);
-//			p.setInt(4, 99);
-//			ResultSet rs = p.executeQuery();
-//			//查询到限定的结果则正确
-//			if (rs.next()) {
-//				//获得该行的列结果，下标也是从1开始
-//				System.out.println("结果正确" + rs.getString(1));
-//			}else {
-//				System.out.println("无结果");
-//			}
-//			rs.close();
-//			//分页查询，获取总数
-//			p.setString(1, "hero%");
-//			p.setInt(2, 50);
-//			//设置分页查询
-//			p.setInt(3, 4);
-//			p.setInt(4, 50);
-//			rs = p.executeQuery();
-//			int count = 0;
-//			while (rs.next()) {
-//				count++;
-//			}
-//			rs.close();
-//			System.out.println("分页查询总共查询到" + count);
-//			//防止SQL注入
-//			//设SQL注入式攻击的用户提交的信息为"'hero' or 1 = 1"
-//			Statement s = c.createStatement();
-//			rs = s.executeQuery("select * from hero where name like " + "'hero0' or 1 =1" + " and hp > 50 limit 0, 99;");
-//			count = 0;
-//			while (rs.next()) count++;
-//			System.out.println("SQL注入式攻击的结果为" + count);
-//			rs.close();
-//			//PreparedStatement防止SQL注入式攻击
-//			p.setString(1, "'hero0' or 1 =1");
-//			p.setInt(2, 50);
-//			p.setInt(3, 0);
-//			p.setInt(4, 99);
-//			rs = p.executeQuery();
-//			if (rs.next()) System.out.println("SQL注入式攻击成功");
-//			else System.out.println("阻止SQL注入式攻击");
-//			rs.close();
-//			//性能比较
-//			long start = System.currentTimeMillis();
-//			for (int i = 0; i < 10000; i++) {
-//				rs = s.executeQuery("select * from hero where name like \"hero%\" and hp > 0 limit 0, 99;");
-//			}
-//			System.out.println("每次执行sql语句消耗时间" + (System.currentTimeMillis() - start));
-//			rs.close();
-//			s.close();
-//			start = System.currentTimeMillis();
-//			for (int i = 0; i < 10000; i++) {
-//				p.setString(1, "hero%");
-//				p.setInt(2, 0);
-//				p.setInt(3, 0);
-//				p.setInt(4, 99);
-//				rs = p.executeQuery();
-//			}
-//			System.out.println("每次传入参数消耗时间" + (System.currentTimeMillis() - start));
-//			rs.close();
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
+		// TODO：预编译PreparedStatement,判断账号密码是否正确，获取总数，分页查询,PreparedStatement和Statement性能比较，防止SQL注入式攻击
+		try (Connection c = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "tiger");
+				PreparedStatement p = c.prepareStatement("select * from hero where name like ? and hp > ? limit ?, ?;");) {
+			//判断账号密码是否正确,类似
+			//设置参数，下标从1开始
+			p.setString(1, "hero0");
+			p.setInt(2, 70);
+			p.setInt(3, 0);
+			p.setInt(4, 99);
+			ResultSet rs = p.executeQuery();
+			//查询到限定的结果则正确
+			if (rs.next()) {
+				//获得该行的列结果，下标也是从1开始
+				System.out.println("结果正确" + rs.getString(1));
+			}else {
+				System.out.println("无结果");
+			}
+			rs.close();
+			//分页查询，获取总数
+			p.setString(1, "hero%");
+			p.setInt(2, 50);
+			//设置分页查询
+			p.setInt(3, 4);
+			p.setInt(4, 50);
+			rs = p.executeQuery();
+			int count = 0;
+			while (rs.next()) {
+				count++;
+			}
+			rs.close();
+			System.out.println("分页查询总共查询到" + count);
+			//防止SQL注入
+			//设SQL注入式攻击的用户提交的信息为"'hero' or 1 = 1"
+			Statement s = c.createStatement();
+			rs = s.executeQuery("select * from hero where name like " + "'hero0' or 1 =1" + " and hp > 50 limit 0, 99;");
+			count = 0;
+			while (rs.next()) count++;
+			System.out.println("SQL注入式攻击的结果为" + count);
+			rs.close();
+			//PreparedStatement防止SQL注入式攻击
+			p.setString(1, "'hero0' or 1 =1");
+			p.setInt(2, 50);
+			p.setInt(3, 0);
+			p.setInt(4, 99);
+			rs = p.executeQuery();
+			if (rs.next()) System.out.println("SQL注入式攻击成功");
+			else System.out.println("阻止SQL注入式攻击");
+			rs.close();
+			//性能比较
+			long start = System.currentTimeMillis();
+			for (int i = 0; i < 10000; i++) {
+				rs = s.executeQuery("select * from hero where name like \"hero%\" and hp > 0 limit 0, 99;");
+			}
+			System.out.println("每次执行sql语句消耗时间" + (System.currentTimeMillis() - start));
+			rs.close();
+			s.close();
+			start = System.currentTimeMillis();
+			for (int i = 0; i < 10000; i++) {
+				p.setString(1, "hero%");
+				p.setInt(2, 0);
+				p.setInt(3, 0);
+				p.setInt(4, 99);
+				rs = p.executeQuery();
+			}
+			System.out.println("每次传入参数消耗时间" + (System.currentTimeMillis() - start));
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 //		// TODO:自增ID的设置和获取
 //		// 自增的效果和自增字段的获取
 //		try (Connection c = DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "tiger");
