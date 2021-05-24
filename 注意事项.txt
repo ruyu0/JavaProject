@@ -35,3 +35,5 @@ https://segmentfault.com/a/1190000014170298
 6.Thread相关方法：currentTread(), sleep()
 
 7.java IO之AutoCloseable,Closeable和Flushable接口 https://blog.csdn.net/z69183787/article/details/78258320
+
+8.System.getProperty("");//获取系统信息https://www.cnblogs.com/nbjin/p/7392541.html

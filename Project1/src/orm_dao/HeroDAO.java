@@ -13,7 +13,7 @@ import character.Hero;
 
 public class HeroDAO implements DAO<Hero> {
 	private Connection getConnection() throws SQLException {
-		return DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "tiger");
+		return DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "tiger");
 	}
 
 	@Override

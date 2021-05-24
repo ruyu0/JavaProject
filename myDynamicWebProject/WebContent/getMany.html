@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="GBK">
+<title>用AJAX以JSON方式获取多个数据</title>
+<script type="text/javascript" src="jquery.min.js"></script>
+</head>
+<body>
+<input type='button' value='用AJAX以JSON方式获取多个数据' id='sender'><br>
+<div id='messageDiv'></div>
+<script>
+$('#sender').click(function(){
+	var url='getMany';
+	$.post(
+		url,
+		function(data){
+			var heros=$.parseJSON(data);
+			for (i in heros){
+				var old=$('#messageDiv').html();
+				var hero=heros[i];
+				$('#messageDiv').html(old + "<br>" + hero.name + "	-----	" + hero.HP);
+			}
+		})
+});
+</script>
+</body>
+</html>
